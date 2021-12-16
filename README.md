@@ -11,3 +11,12 @@
 
 # Definition Of Done
 - Tous les tests passent
+
+# Team
+**ARCIL Alexandre**
+
+**MARSAIS-LACOSTE Marcel**
+
+**NIGET Tom**
+
+**VOURIOT Emmeline**
