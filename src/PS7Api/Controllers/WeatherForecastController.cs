@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PS7Api.Models;
 
 namespace PS7Api.Controllers;
 
@@ -12,10 +13,12 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly Ps7Context _context;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, Ps7Context context)
     {
         _logger = logger;
+        _context = context;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
