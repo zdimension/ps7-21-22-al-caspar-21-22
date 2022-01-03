@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        DataGenerator.Initialize(scope.ServiceProvider.GetRequiredService<Ps7Context>());
+    }
+
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
