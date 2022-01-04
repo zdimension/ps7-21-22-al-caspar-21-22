@@ -36,9 +36,9 @@ public static class DataGenerator
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = "customs@local"
         };
-        admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "customs");
-        await userStore.CreateAsync(admin);
-        await userStore.AddToRoleAsync(admin, UserRole.CustomsOfficer.Name());
+        customs.PasswordHash = new PasswordHasher<User>().HashPassword(customs, "customs");
+        await userStore.CreateAsync(customs);
+        await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
 
         await context.SaveChangesAsync();
     }
