@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using PS7Api.Models;
 using PS7Api.Utilities;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -108,3 +110,8 @@ using (var scope = app.Services.CreateScope())
 
 app.Logger.LogInformation("Starting API...");
 app.Run();
+
+public partial class Program
+{
+    // Expose the Program class for use with WebApplicationFactory<T>
+}
