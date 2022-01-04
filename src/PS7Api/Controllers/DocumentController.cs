@@ -53,6 +53,20 @@ namespace PS7Api.Controllers
                 
             return Ok(doc);
         }
+        
+        // GET: api/Document/5/Image
+        [HttpGet("{id}/Image", Name = "Image")]
+        public async Task<IActionResult> Image(int id)
+        {
+            var doc = await _context.Documents.FindAsync(id);
+                
+            if (doc == null)
+            {
+                return NotFound();
+            }
+
+            return File(doc.Image, "image/*");
+        }
 
         // DELETE: api/Document/5
         [HttpDelete("{id}")]
