@@ -100,7 +100,7 @@ using (var scope = app.Services.CreateScope())
     var scopedProvider = scope.ServiceProvider;
     try
     {
-        await DataGenerator.SeedAsync(scopedProvider, app.Logger);
+        await DataGenerator.SeedAsync(scopedProvider);
     }
     catch (Exception ex)
     {
