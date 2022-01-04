@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 namespace PS7Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace PS7Api.Controllers
         }
 
         // GET: api/DocumentAnomaly
-        //[Authorize(Roles = UserRoles.Administrator)]
+        [AuthorizeRoles(UserRole.Administrator)]
         [HttpGet]
         public IActionResult Get()
         {
@@ -31,7 +32,7 @@ namespace PS7Api.Controllers
         }
 
         // GET: api/DocumentAnomaly/5
-        //[Authorize(Roles = UserRoles.Administrator)]
+        [AuthorizeRoles(UserRole.Administrator)]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -46,7 +47,7 @@ namespace PS7Api.Controllers
         }
 
         // DELETE: api/DocumentAnomaly/5
-        //[Authorize(Roles = UserRoles.Administrator)]
+        [AuthorizeRoles(UserRole.Administrator)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
