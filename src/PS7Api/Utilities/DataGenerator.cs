@@ -17,17 +17,28 @@ public static class DataGenerator
             await roleStore.CreateAsync(new IdentityRole { Name = role, NormalizedName = role });
 
         var userStore = new UserStore<User>(context);
-        var user = new User
+        
+        var admin = new User
         {
             Email = "admin@local",
             NormalizedEmail = "ADMIN@LOCAL",
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = "admin@local"
         };
-        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "admin");
-        await userStore.CreateAsync(user);
-
-        await userStore.AddToRoleAsync(user, UserRole.Administrator.Name());
+        admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "admin");
+        await userStore.CreateAsync(admin);
+        await userStore.AddToRoleAsync(admin, UserRole.Administrator.Name());
+        
+        var customs = new User
+        {
+            Email = "customs@local",
+            NormalizedEmail = "CUSTOMS@LOCAL",
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = "customs@local"
+        };
+        admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "customs");
+        await userStore.CreateAsync(admin);
+        await userStore.AddToRoleAsync(admin, UserRole.CustomsOfficer.Name());
 
         await context.SaveChangesAsync();
     }
