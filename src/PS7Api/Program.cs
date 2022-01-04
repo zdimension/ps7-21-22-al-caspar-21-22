@@ -10,10 +10,9 @@ using PS7Api.Utilities;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<IdentityContext>(opt => opt.UseInMemoryDatabase("Ps7Identity"));
 builder.Services.AddDbContext<Ps7Context>(opt => opt.UseInMemoryDatabase("Ps7"));
 builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<IdentityContext>()
+    .AddEntityFrameworkStores<Ps7Context>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -99,8 +98,7 @@ using (var scope = app.Services.CreateScope())
     var scopedProvider = scope.ServiceProvider;
     try
     {
-        var context = scopedProvider.GetRequiredService<Ps7Context>();
-        await DataGenerator.SeedAsync(context, app.Logger);
+        await DataGenerator.SeedAsync(scopedProvider, app.Logger);
     }
     catch (Exception ex)
     {
