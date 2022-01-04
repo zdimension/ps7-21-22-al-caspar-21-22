@@ -64,6 +64,19 @@ public class DocumentControllerTests
         
         Assert.Equal(0, doc.Anomalies.Count);
     }
+    
+    [Fact]
+    public async Task Posting_Document_Returns_201()
+    {
+        await using var app = new Ps7Fixture();
+    
+        var client = app.CreateClient();
+        client.Login("customs");
+        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[0]), "file", "document.jpg" } };
+        var res = await client.PostAsync("/api/Document", content);
+    
+        Assert.Equal(HttpStatusCode.Created, res.StatusCode);
+    }
 
     
 }
