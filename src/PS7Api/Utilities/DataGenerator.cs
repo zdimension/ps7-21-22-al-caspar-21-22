@@ -7,7 +7,7 @@ namespace PS7Api.Utilities;
 
 public static class DataGenerator
 {
-    public static async Task SeedAsync(IServiceProvider services, ILogger logger)
+    public static async Task SeedAsync(IServiceProvider services)
     {
         await using var context = services.GetRequiredService<Ps7Context>();
         await context.Database.EnsureCreatedAsync();
