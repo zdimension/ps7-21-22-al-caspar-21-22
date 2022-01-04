@@ -5,8 +5,8 @@ namespace PS7Api.Utilities;
 
 public static class DataGenerator
 {
-    public static void Initialize(Ps7Context context)
+    public static async Task SeedAsync(Ps7Context context, ILogger logger)
     {
-        context.Database.EnsureCreated();
+        await context.Database.EnsureCreatedAsync();
     }
 }

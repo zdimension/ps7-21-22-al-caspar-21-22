@@ -1,13 +1,13 @@
-﻿namespace PS7Api.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace PS7Api.Models;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-    public UserType Type { get; set; }
 }
 
-public enum UserType
+public static class UserRoles
 {
-    CustomsOfficer,
-    Administrator
+    public const string CustomsOfficer = "CustomsOfficer";
+    public const string Administrator = "Administrator";
 }
