@@ -1,5 +1,7 @@
 # ps7-21-22-al-caspar-21-22
 
+[![.NET](https://github.com/PNS-PS7and8/ps7-21-22-al-caspar-21-22/actions/workflows/dotnet.yml/badge.svg)](https://github.com/PNS-PS7and8/ps7-21-22-al-caspar-21-22/actions/workflows/dotnet.yml)
+
 # Definition Of Ready
 - User Story, TechUS et Spike créés
 - Ils ont une description
