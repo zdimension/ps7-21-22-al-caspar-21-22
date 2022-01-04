@@ -6,5 +6,5 @@ public class Document
     public byte[] Image { get; set; }
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public bool Verified { get; set; } = false;
-    public ICollection<DocumentAnomaly> Anomalies { get; set; }
+    public ICollection<DocumentAnomaly> Anomalies { get; set; } = new List<DocumentAnomaly>();
 }

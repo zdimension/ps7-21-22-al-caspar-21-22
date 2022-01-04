@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
 using PS7Api.Utilities;
 
@@ -44,7 +39,7 @@ namespace PS7Api.Controllers
         [HttpGet("{id}", Name = "Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var doc = await _context.Documents.FindAsync(id);
+            var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
                 
             if (doc == null)
             {
@@ -83,5 +78,25 @@ namespace PS7Api.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        
+        // POST: api/Document/5/Non-compliant
+        public record Anomalies(string[] anomalies);
+        [HttpPost("{id}/Non-compliant")]
+        public async Task<IActionResult> NonCompliant(int id, [FromBody] Anomalies anomalies)
+        {
+            var doc = await this._context.Documents.FindAsync(id);
+            if(doc == null)
+                return NotFound();
+            if (anomalies.anomalies.Length == 0)
+                return UnprocessableEntity();
+            foreach (string anomaly in anomalies.anomalies)
+            {
+                doc.Anomalies.Add(new DocumentAnomaly() {DocumentId = id, Document = doc, Anomaly = anomaly});
+            }
+            _logger.LogInformation("{}", doc.Anomalies);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Testing;
+using PS7Api.Controllers;
+using PS7Api.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PS7Api.UnitTests.Controllers;
 
@@ -24,6 +21,49 @@ public class DocumentControllerTests
         
         Assert.Equal(HttpStatusCode.NotFound, doc.StatusCode);
     }
+
+    [Fact]
+    public async Task Anomalies_Added()
+    {
+        await using var app = new Ps7Fixture();
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[0]), "file", "image.jpg" } };
+        await client.PostAsync("/api/Document", content);
+
+        var anomaliesDesc = new[] {"coin coin", "42", "GRRRR"};
+        var anomalies = new DocumentController.Anomalies(anomaliesDesc);
+        var res = await client.PostAsync("/api/Document/1/Non-compliant", JsonContent.Create(anomalies));
+        
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+
+        var response = await client.GetAsync("/api/Document/1");
+        var doc = await response.Content.ReadFromJsonAsync<Document>();
+        
+        Assert.Equal(3, doc.Anomalies.Count);
+        Assert.Equal(anomaliesDesc, doc.Anomalies.Select(anomaly => anomaly.Anomaly));
+    }
+    
+    [Fact]
+    public async Task Anomalies_Empty()
+    {
+        await using var app = new Ps7Fixture();
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[0]), "file", "image.jpg" } };
+        await client.PostAsync("/api/Document", content);
+        
+        var anomalies = new DocumentController.Anomalies(new string[0]);
+        var res = await client.PostAsync("/api/Document/1/Non-compliant", JsonContent.Create(anomalies));
+        Assert.Equal(HttpStatusCode.UnprocessableEntity, res.StatusCode);
+
+        var response = await client.GetAsync("/api/Document/1");
+        var doc = await response.Content.ReadFromJsonAsync<Document>();
+        
+        Assert.Equal(0, doc.Anomalies.Count);
+    }
     
     [Fact]
     public async Task Posting_Document_Returns_201()
@@ -37,4 +77,6 @@ public class DocumentControllerTests
     
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
     }
+
+    
 }
