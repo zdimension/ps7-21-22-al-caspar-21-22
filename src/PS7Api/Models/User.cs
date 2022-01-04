@@ -6,8 +6,16 @@ public class User : IdentityUser
 {
 }
 
-public static class UserRoles
+public enum UserRole
 {
-    public const string CustomsOfficer = "CustomsOfficer";
-    public const string Administrator = "Administrator";
+    CustomsOfficer,
+    Administrator
+}
+
+public static class UserRoleExtensions
+{
+    public static string Name(this UserRole role)
+    {
+        return role.ToString().ToUpper();
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
-    public record LoginBody(string Email, string Password);
+    public record LoginBody([EmailAddress] string Email, string Password);
 
     [HttpPost]
     [Route("login")]

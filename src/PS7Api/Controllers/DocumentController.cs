@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 namespace PS7Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace PS7Api.Controllers
         }
         
         // POST: api/Document
-        [Authorize(Roles = UserRoles.CustomsOfficer)]
+        [AuthorizeRoles(UserRole.CustomsOfficer)]
         [HttpPost(Name = "Scan")]
         public async Task<IActionResult> Scan(IFormFile file)
         {
