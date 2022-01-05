@@ -13,5 +13,5 @@ public class Ps7Context : IdentityDbContext<User>
     public DbSet<DocumentAnomaly> DocumentAnomalies { get; set; }
     
     //todo trouver pourquoi cette ligne fait tout planter même quand personne s'en sert
-    public DbSet<Tuple<string, List<string>>> RequiredDocuments { get; set; }
+    public DbSet<RequiredDocument> RequiredDocuments { get; set; }
 }

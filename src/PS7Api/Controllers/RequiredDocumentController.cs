@@ -42,14 +42,14 @@ namespace PS7Api.Controllers
                 return UnprocessableEntity();
             }
 
-            //var links = await _context.RequiredDocuments
-            //    .Where(t => t.Item1 == nat.Name || t.Item1 == from.Name || t.Item1 == to.Name)
-            //    .Distinct()
-            //    .Include(t => t.Item2)
-            //    .SelectMany(t => t.Item2)
-            //    .ToListAsync();
-            //return Ok(links);
-            return Ok();
+            var links = await _context.RequiredDocuments
+                .Where(t => t.Country == nat.Name || t.Country == from.Name || t.Country == to.Name)
+                .Distinct()
+                .Include(t => t.Country)
+                .SelectMany(t => t.Country)
+                .ToListAsync();
+            return Ok(links);
+            //return Ok();
         }
     }
 }

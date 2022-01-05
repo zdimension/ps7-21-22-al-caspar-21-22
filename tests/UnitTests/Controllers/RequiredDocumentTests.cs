@@ -24,7 +24,6 @@ public class RequiredDocumentTests
 			["destination"] = "en-GB",
 		};
 		var response = await client.GetAsync(QueryHelpers.AddQueryString("/api/RequiredDocument/", query));
-		//var res = await client.GetAsync("/api/RequiredDocument/?nationality=fr-FR&origin=fr-FR&destination=en-GB");
 		var resData = await response.Content.ReadFromJsonAsync<List<string>>();
 
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
