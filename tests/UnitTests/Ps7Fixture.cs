@@ -6,6 +6,7 @@ using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PS7Api.Models;
@@ -18,10 +19,11 @@ public class Ps7Fixture : WebApplicationFactory<Program>
 {
     protected override IHost CreateHost(IHostBuilder builder)
     {
+        var root = new InMemoryDatabaseRoot();
         builder.ConfigureServices(services =>
         {
             services.AddScoped(sp => new DbContextOptionsBuilder<Ps7Context>()
-                .UseInMemoryDatabase("TestDb")
+                .UseInMemoryDatabase("TestDb", root)
                 .UseApplicationServiceProvider(sp)
                 .Options);
         });
