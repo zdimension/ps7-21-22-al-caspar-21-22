@@ -2,21 +2,18 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using MartinCostello.Logging.XUnit;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PS7Api.Models;
-using PS7Api.Utilities;
-using Xunit.Abstractions;
 
 namespace PS7Api.UnitTests;
 
 public class Ps7Fixture : WebApplicationFactory<Program>
 {
+    
     protected override IHost CreateHost(IHostBuilder builder)
     {
         var root = new InMemoryDatabaseRoot();

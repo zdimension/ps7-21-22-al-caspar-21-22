@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -20,6 +22,60 @@ public class DocumentControllerTests
         var doc = await client.GetAsync("/api/Document/0");
         
         Assert.Equal(HttpStatusCode.NotFound, doc.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Get_Document()
+    {
+        await using var app = new Ps7Fixture();
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        string path = "../../../Image/declaration_douane.png";
+        byte[] imgBytes = File.ReadAllBytes(path);
+        var content = new MultipartFormDataContent {{new ByteArrayContent(imgBytes), "file", "image.jpg"}};
+        await client.PostAsync("/api/Document", content);
+            
+        var result = await client.GetAsync("/api/Document/1");
+        
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+
+        var doc = await result.Content.ReadFromJsonAsync<Document>();
+        Assert.Equal(imgBytes, doc.Image);
+        Assert.NotEqual(DateTime.MinValue, doc.Date);
+        Assert.False(doc.Verified);
+        Assert.Empty(doc.Anomalies);
+    }
+    
+    [Fact]
+    public async Task Missing_Image_Returns_404()
+    {
+        await using var app = new Ps7Fixture();
+        
+        var client = app.CreateClient();
+        var doc = await client.GetAsync("/api/Document/0/Image");
+        
+        Assert.Equal(HttpStatusCode.NotFound, doc.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Get_Image()
+    {
+        await using var app = new Ps7Fixture();
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        string path = "../../../Image/declaration_douane.png";
+        byte[] imgBytes = File.ReadAllBytes(path);
+        var content = new MultipartFormDataContent {{new ByteArrayContent(imgBytes), "file", "image.jpg"}};
+        await client.PostAsync("/api/Document", content);
+        
+        var result = await client.GetAsync("/api/Document/1/Image");
+        
+        Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        
+        var contentImg = await result.Content.ReadAsByteArrayAsync();
+        Assert.Equal(imgBytes, contentImg);
     }
 
     [Fact]
@@ -105,4 +161,17 @@ public class DocumentControllerTests
         
         Assert.Equal(HttpStatusCode.NotFound, res.StatusCode);
     }
+    
+    [Fact]
+    public async Task Posting_Document_Without_Authentified()
+    {
+        await using var app = new Ps7Fixture();
+    
+        var client = app.CreateClient();
+        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[0]), "file", "document.jpg" } };
+        var res = await client.PostAsync("/api/Document", content);
+    
+        Assert.Equal(HttpStatusCode.Unauthorized, res.StatusCode);
+    }
+    
 }
