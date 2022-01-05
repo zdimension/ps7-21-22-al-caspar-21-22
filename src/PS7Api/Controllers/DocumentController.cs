@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
@@ -71,6 +72,35 @@ public class DocumentController : ControllerBase
         _context.Documents.Remove(doc);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+    
+    // PATCH: api/Document/4
+    [HttpPatch("{id}")]
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document>? patchDoc)
+    {
+        if (patchDoc == null)
+        {
+            return BadRequest();
+        }
+ 
+        var documentFromDb = await _context.Documents.FindAsync(id);
+ 
+        if (documentFromDb == null)
+        {
+            return NotFound();
+        }
+ 
+        patchDoc.ApplyTo(documentFromDb);
+ 
+        var isValid = TryValidateModel(documentFromDb);
+ 
+        if (!isValid){
+            return BadRequest(ModelState);
+        }
+ 
+        await _context.SaveChangesAsync();
+ 
+        return NoContent();
     }
 
     // POST: api/Document/5/Non-compliant
