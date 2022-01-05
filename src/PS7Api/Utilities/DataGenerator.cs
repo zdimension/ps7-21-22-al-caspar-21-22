@@ -40,6 +40,10 @@ public static class DataGenerator
         await userStore.CreateAsync(customs);
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
 
+        //await context.RequiredDocuments.AddRangeAsync(CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+        //    .Select(t => Tuple.Create(new RegionInfo(t.LCID).Name, new List<string>{new RegionInfo(t.LCID).Name+" 1", new RegionInfo(t.LCID).Name+" 2"}))
+        //    .ToList());
+        
         await context.SaveChangesAsync();
     }
 }
