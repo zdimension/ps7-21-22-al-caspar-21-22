@@ -3,100 +3,91 @@ using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
 using PS7Api.Utilities;
 
-namespace PS7Api.Controllers
+namespace PS7Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class DocumentController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DocumentController : ControllerBase
+    private readonly Ps7Context _context;
+    private readonly ILogger<DocumentController> _logger;
+
+    public DocumentController(ILogger<DocumentController> logger, Ps7Context context)
     {
-        private readonly ILogger<DocumentController> _logger;
-        private readonly Ps7Context _context;
-
-        public DocumentController(ILogger<DocumentController> logger, Ps7Context context)
-        {
-            _logger = logger;
-            _context = context;
-        }
-        
-        // POST: api/Document
-        [AuthorizeRoles(UserRole.CustomsOfficer)]
-        [HttpPost(Name = "Scan")]
-        public async Task<IActionResult> Scan(IFormFile file)
-        {
-            _logger.LogDebug("Scanning document size {Len}", file.Length);
-            
-            var ms = new MemoryStream();
-            await file.CopyToAsync(ms);
-            var document = new Document() { Image = ms.ToArray() };
-            
-            _context.Documents.Add(document);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", new { id = document.Id }, document);
-        }
-
-        // GET: api/Document/5
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
-                
-            if (doc == null)
-            {
-                return NotFound();
-            }
-                
-            return Ok(doc);
-        }
-        
-        // GET: api/Document/5/Image
-        [HttpGet("{id}/Image", Name = "Image")]
-        public async Task<IActionResult> Image(int id)
-        {
-            var doc = await _context.Documents.FindAsync(id);
-                
-            if (doc == null)
-            {
-                return NotFound();
-            }
-
-            return File(doc.Image, "image/*");
-        }
-
-        // DELETE: api/Document/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var doc = await _context.Documents.FindAsync(id);
-            
-            if (doc == null)
-            {
-                return NotFound();
-            }
-            
-            _context.Documents.Remove(doc);
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-        
-        // POST: api/Document/5/Non-compliant
-        public record Anomalies(string[] anomalies);
-        [HttpPost("{id}/Non-compliant")]
-        public async Task<IActionResult> NonCompliant(int id, [FromBody] Anomalies anomalies)
-        {
-            var doc = await this._context.Documents.FindAsync(id);
-            if(doc == null)
-                return NotFound();
-            if (anomalies.anomalies.Length == 0)
-                return UnprocessableEntity();
-            foreach (string anomaly in anomalies.anomalies)
-            {
-                doc.Anomalies.Add(new DocumentAnomaly() {DocumentId = id, Document = doc, Anomaly = anomaly});
-            }
-            _logger.LogInformation("{}", doc.Anomalies);
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-        
+        _logger = logger;
+        _context = context;
     }
+
+    // POST: api/Document
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    [HttpPost(Name = "Scan")]
+    public async Task<IActionResult> Scan(IFormFile file)
+    {
+        _logger.LogDebug("Scanning document size {Len}", file.Length);
+
+        var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+        var document = new Document { Image = ms.ToArray() };
+
+        _context.Documents.Add(document);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("Get", new { id = document.Id }, document);
+    }
+
+    // GET: api/Document/5
+    [HttpGet("{id}", Name = "Get")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
+
+        if (doc == null)
+            return NotFound();
+
+        return Ok(doc);
+    }
+
+    // GET: api/Document/5/Image
+    [HttpGet("{id}/Image", Name = "Image")]
+    public async Task<IActionResult> Image(int id)
+    {
+        var doc = await _context.Documents.FindAsync(id);
+
+        if (doc == null)
+            return NotFound();
+
+        return File(doc.Image, "image/*");
+    }
+
+    // DELETE: api/Document/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var doc = await _context.Documents.FindAsync(id);
+
+        if (doc == null)
+            return NotFound();
+
+        _context.Documents.Remove(doc);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    // POST: api/Document/5/Non-compliant
+    [HttpPost("{id}/Non-compliant")]
+    public async Task<IActionResult> NonCompliant(int id, [FromBody] AnomaliesBody anomalies)
+    {
+        var doc = await _context.Documents.FindAsync(id);
+        if (doc == null)
+            return NotFound();
+        if (anomalies.Anomalies.Length == 0)
+            return UnprocessableEntity();
+        foreach (var anomaly in anomalies.Anomalies)
+            doc.Anomalies.Add(new DocumentAnomaly { DocumentId = id, Document = doc, Anomaly = anomaly });
+        _logger.LogInformation("{}", doc.Anomalies);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+    
+    public record AnomaliesBody(string[] Anomalies);
 }

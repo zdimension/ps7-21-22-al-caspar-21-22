@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
 
 namespace PS7Api.Utilities;
@@ -18,7 +17,7 @@ public static class DataGenerator
             await roleStore.CreateAsync(new IdentityRole { Name = role, NormalizedName = role });
 
         var userStore = new UserStore<User>(context);
-        
+
         var admin = new User
         {
             Email = "admin@local",
@@ -29,7 +28,7 @@ public static class DataGenerator
         admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "admin");
         await userStore.CreateAsync(admin);
         await userStore.AddToRoleAsync(admin, UserRole.Administrator.Name());
-        
+
         var customs = new User
         {
             Email = "customs@local",

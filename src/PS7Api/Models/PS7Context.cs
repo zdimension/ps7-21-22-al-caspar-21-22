@@ -8,7 +8,7 @@ public class Ps7Context : IdentityDbContext<User>
     public Ps7Context(DbContextOptions<Ps7Context> options) : base(options)
     {
     }
-    
+
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentAnomaly> DocumentAnomalies { get; set; }
 }

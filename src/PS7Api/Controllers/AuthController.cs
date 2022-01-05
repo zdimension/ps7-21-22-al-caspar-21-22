@@ -13,9 +13,9 @@ namespace PS7Api.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly UserManager<User> _userManager;
 
     public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
@@ -25,31 +25,29 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
-    public record LoginBody([EmailAddress] string Email, string Password);
-
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginBody body)
     {
         var user = await _userManager.FindByEmailAsync(body.Email);
-        
+
         if (user == null || !await _userManager.CheckPasswordAsync(user, body.Password))
             return Unauthorized();
-        
+
         var userRoles = await _userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.Name, user.UserName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
 
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JWT:ValidIssuer"],
-            audience: _configuration["JWT:ValidAudience"],
+            _configuration["JWT:ValidIssuer"],
+            _configuration["JWT:ValidAudience"],
             expires: DateTime.Now.AddHours(3),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
@@ -81,8 +79,13 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new
-                    { Status = "Error", Message = "User creation failed.", Errors = result.Errors.Select(err => err.Description) });
+                {
+                    Status = "Error", Message = "User creation failed.",
+                    Errors = result.Errors.Select(err => err.Description)
+                });
 
         return Ok(new { Status = "Success", Message = "User created successfully!" });
     }
+
+    public record LoginBody([EmailAddress] string Email, string Password);
 }

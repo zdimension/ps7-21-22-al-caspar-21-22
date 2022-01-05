@@ -7,8 +7,6 @@ using Microsoft.OpenApi.Models;
 using PS7Api.Models;
 using PS7Api.Utilities;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -34,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -46,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
                 },
                 Scheme = "oauth2",
                 Name = "Bearer",
-                In = ParameterLocation.Header,
+                In = ParameterLocation.Header
             },
             new List<string>()
         }
