@@ -233,8 +233,4 @@ public class DocumentAnomalyControllerTests
 		Assert.Equal(HttpStatusCode.OK, allDocAno.StatusCode);
 		Assert.Equal(HttpStatusCode.NotFound, allDocAno2.StatusCode);
 	}
-	
-	
-	
-	
 }

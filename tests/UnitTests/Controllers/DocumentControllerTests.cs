@@ -77,4 +77,32 @@ public class DocumentControllerTests
     
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
     }
+    
+    [Fact]
+    public async Task Deleting_Document_Returns_200()
+    {
+        await using var app = new Ps7Fixture();
+    
+        var client = app.CreateClient();
+        client.Login("customs");
+        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[0]), "file", "document.jpg" } };
+        await client.PostAsync("/api/Document", content);
+
+        var res = await client.DeleteAsync(("/api/Document/1"));
+        
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Deleting_Document_Returns_404()
+    {
+        await using var app = new Ps7Fixture();
+    
+        var client = app.CreateClient();
+        client.Login("customs");
+
+        var res = await client.DeleteAsync(("/api/Document/1"));
+        
+        Assert.Equal(HttpStatusCode.NotFound, res.StatusCode);
+    }
 }
