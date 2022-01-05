@@ -9,7 +9,6 @@ public class Ps7Context : IdentityDbContext<User>
     {
     }
     
-    public DbSet<User> Users { get; set; }
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentAnomaly> DocumentAnomalies { get; set; }
 }

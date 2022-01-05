@@ -8,21 +8,20 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 namespace PS7Api.UnitTests;
 
 public class Ps7Fixture : WebApplicationFactory<Program>
 {
+    private readonly string _dbName = Guid.NewGuid().ToString();
     
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        var root = new InMemoryDatabaseRoot();
         builder.ConfigureServices(services =>
         {
-            services.AddScoped(sp => new DbContextOptionsBuilder<Ps7Context>()
-                .UseInMemoryDatabase("TestDb", root)
-                .UseApplicationServiceProvider(sp)
-                .Options);
+            services.AddDbContext<Ps7Context>(options => options
+                .UseInMemoryDatabase(_dbName));
         });
         return base.CreateHost(builder);
     }

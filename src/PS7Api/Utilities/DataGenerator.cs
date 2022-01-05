@@ -10,6 +10,7 @@ public static class DataGenerator
     public static async Task SeedAsync(IServiceProvider services)
     {
         await using var context = services.GetRequiredService<Ps7Context>();
+        await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
 
         using var roleStore = services.GetRequiredService<RoleManager<IdentityRole>>();
