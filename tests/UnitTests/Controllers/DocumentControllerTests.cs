@@ -11,7 +11,6 @@ using Xunit;
 
 namespace PS7Api.UnitTests.Controllers;
 
-[Collection("Sequential")]
 public class DocumentControllerTests
 {
     [Fact]
