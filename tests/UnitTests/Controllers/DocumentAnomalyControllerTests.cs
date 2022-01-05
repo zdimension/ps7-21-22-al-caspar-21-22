@@ -74,4 +74,18 @@ public class DocumentAnomalyControllerTests
 		
 		Assert.Equal(HttpStatusCode.Unauthorized, docAno.StatusCode);
 	}
+	
+	[Fact]
+	public async Task Empty_DocumentAnomaly_GET_Returns_403()
+	{
+		await using var app = new Ps7Fixture();
+
+		var client = app.CreateClient();
+		client.Login("customs");
+		var allDocAno = await client.GetAsync("/api/DocumentAnomaly");
+		
+		Assert.Equal(HttpStatusCode.Forbidden, allDocAno.StatusCode);
+	}
+	
+	
 }
