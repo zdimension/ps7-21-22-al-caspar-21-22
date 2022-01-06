@@ -2,16 +2,17 @@ namespace PS7Api.Models;
 
 public class StreamFrontier
 {
+    public int Id { get; set; }
     public int NbPassengers { get; set; }
     public TypePassenger Type { get; set; }
     public string Frequency { get; set; }
-    public System.Tuple<DateTime, DateTime> Period { get; set; }
+    public (DateTime, DateTime) Period { get; set; }
     public List<string> CrossingPoints { get; set; }
 }
 
-public class TypePassenger
+public abstract class TypePassenger
 {
-    
+    public int Id { get; set; }
 }
 
 public class Human : TypePassenger

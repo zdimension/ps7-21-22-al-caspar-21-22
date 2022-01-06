@@ -22,7 +22,12 @@ public class StreamController : ControllerBase
     
     // GET: api/Stream/filter?typePassenger=&period=&crossingPoints=&nbPassengers=4
     [HttpGet(Name = "GetStream")]
-    public Task<IActionResult> Get([FromQuery] TypePassenger? typePassenger, string frequency, [FromQuery] Tuple<DateTime, DateTime>? period, [FromQuery] List<string>? crossingPoints, int nbPassengers = -1)
+    public Task<IActionResult> Get(
+        [FromQuery] TypePassenger? typePassenger = null, 
+        string? frequency = null, 
+        [FromQuery] (DateTime from, DateTime to)? period = null, 
+        [FromQuery] List<string>? crossingPoints = null, 
+        int nbPassengers = -1)
     {
         // Use LINQ to get list of passengers
         var passengers = from m in _context.StreamsFrontiers select m;
