@@ -27,11 +27,12 @@ public class StreamController : ControllerBase
     // GET: api/Stream/filter?typePassenger=&period=&crossingPoints=&nbPassengers=4
     [HttpGet(Name = "GetStream")]
     public async Task<IActionResult> Get(
+        [FromQuery] CountRange passengerCount,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         [FromQuery] int? passengerType = null,
-        [FromQuery] int? tollId = null,
-        [FromQuery] CountRange? passengerCount = null)
+        [FromQuery] int? tollId = null
+        )
     {
         var passengers = _context.StreamsFrontiers.AsQueryable();
         
@@ -55,9 +56,14 @@ public class StreamController : ControllerBase
             passengers = passengers.Where(p => p.EntryTollId == tollId || p.ExitTollId == tollId);
         }
         
-        if (passengerCount != null)
+        if (passengerCount.passengerCountMin != null)
         {
-            passengers = passengers.Where(p => p.NbPassengers >= passengerCount.passengerCountMin && p.NbPassengers <= passengerCount.passengerCountMax);
+            passengers = passengers.Where(p => p.NbPassengers >= passengerCount.passengerCountMin);
+        }
+        
+        if (passengerCount.passengerCountMax != null)
+        {
+            passengers = passengers.Where(p => p.NbPassengers <= passengerCount.passengerCountMax);
         }
         
         return Ok(await passengers.ToListAsync());
