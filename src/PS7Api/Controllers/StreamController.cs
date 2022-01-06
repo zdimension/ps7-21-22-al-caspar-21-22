@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,40 +20,46 @@ public class StreamController : ControllerBase
         _logger = logger;
         _context = context;
     }
+
+    // ReSharper disable twice InconsistentNaming
+    public record CountRange(int? passengerCountMin = null, int? passengerCountMax = null);
     
     // GET: api/Stream/filter?typePassenger=&period=&crossingPoints=&nbPassengers=4
     [HttpGet(Name = "GetStream")]
-    public Task<IActionResult> Get(
-        [FromQuery] TypePassenger? typePassenger = null, 
-        string? frequency = null, 
-        [FromQuery] (DateTime from, DateTime to)? period = null, 
-        [FromQuery] List<string>? crossingPoints = null, 
-        int nbPassengers = -1)
+    public async Task<IActionResult> Get(
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null,
+        [FromQuery] int? passengerType = null,
+        [FromQuery] int? tollId = null,
+        [FromQuery] CountRange? passengerCount = null)
     {
-        // Use LINQ to get list of passengers
-        var passengers = from m in _context.StreamsFrontiers select m;
-
-        if (nbPassengers >= 0)
+        var passengers = _context.StreamsFrontiers.AsQueryable();
+        
+        if (startDate != null)
         {
-            passengers = passengers.Where(s => s.NbPassengers == nbPassengers);
+            passengers = passengers.Where(p => p.WaitEnd >= startDate);
         }
-
-        if (typePassenger != null)
+        
+        if (endDate != null)
         {
-            var passenger = typePassenger;
-            passengers = passengers.Where(s => s.Type.Equals(passenger));
+            passengers = passengers.Where(p => p.WaitEnd <= endDate);
         }
-
-        if (period != null)
+        
+        if (passengerType != null)
         {
-            passengers = passengers.Where(s => s.Period.Equals(period));
+            passengers = passengers.Where(p => p.TypeId == passengerType);
         }
-
-        if (crossingPoints != null)
+        
+        if (tollId != null)
         {
-            passengers = passengers.Where(s => s.CrossingPoints.Equals(crossingPoints));
+            passengers = passengers.Where(p => p.EntryTollId == tollId || p.ExitTollId == tollId);
         }
-
-        return Task.FromResult<IActionResult>(Ok(passengers.ToList()));
+        
+        if (passengerCount != null)
+        {
+            passengers = passengers.Where(p => p.NbPassengers >= passengerCount.passengerCountMin && p.NbPassengers <= passengerCount.passengerCountMax);
+        }
+        
+        return Ok(await passengers.ToListAsync());
     }
 }

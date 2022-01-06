@@ -1,13 +1,19 @@
+using PS7Api.Controllers;
+
 namespace PS7Api.Models;
 
-public class StreamFrontier
+public class CrossingInfo
 {
     public int Id { get; set; }
     public int NbPassengers { get; set; }
+    public int TypeId { get; set; }
     public TypePassenger Type { get; set; }
-    public string Frequency { get; set; }
-    public (DateTime, DateTime) Period { get; set; }
-    public List<string> CrossingPoints { get; set; }
+    public DateTime WaitStart { get; set; }
+    public DateTime WaitEnd { get; set; }
+    public int ExitTollId { get; set; }
+    public TollOffice ExitToll { get; set; }
+    public int EntryTollId { get; set; }
+    public TollOffice EntryToll { get; set; }
 }
 
 public abstract class TypePassenger

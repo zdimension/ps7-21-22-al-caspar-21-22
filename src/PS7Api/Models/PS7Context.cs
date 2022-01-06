@@ -14,15 +14,6 @@ public class Ps7Context : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<StreamFrontier>().Property(p => p.CrossingPoints)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
-                v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions())!)
-            .Metadata.SetValueComparer(new ValueComparer<List<string>>(
-                (c1, c2) => c1 == c2 || c1!.SequenceEqual(c2!),
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                c => c.ToList()));
-
         builder.Entity<Human>();
         builder.Entity<Merchendise>();
         
@@ -34,5 +25,5 @@ public class Ps7Context : IdentityDbContext<User>
     
     //todo trouver pourquoi cette ligne fait tout planter même quand personne s'en sert
     public DbSet<RequiredDocument> RequiredDocuments { get; set; }
-    public DbSet<StreamFrontier> StreamsFrontiers { get; set; }
+    public DbSet<CrossingInfo> StreamsFrontiers { get; set; }
 }
