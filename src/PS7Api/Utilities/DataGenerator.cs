@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PS7Api.Models;
 
@@ -40,6 +41,14 @@ public static class DataGenerator
         await userStore.CreateAsync(customs);
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
 
+        var countries = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .Select(c => new RegionInfo(c.LCID).Name).Distinct().ToList();
+
+        await context.RequiredDocuments.AddRangeAsync(countries
+            .Select(c => new RequiredDocument{ Country = c,
+                Links = new List<Link>{new Link{ Url = c+".gov"}, new Link{ Url = c+".com"}}})
+            .ToList());
+        
         await context.SaveChangesAsync();
     }
 }
