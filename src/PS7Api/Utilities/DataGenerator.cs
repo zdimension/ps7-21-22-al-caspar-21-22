@@ -41,8 +41,12 @@ public static class DataGenerator
         await userStore.CreateAsync(customs);
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
 
-        await context.RequiredDocuments.AddRangeAsync(CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .Select(t => new RequiredDocument(new RegionInfo(t.LCID).Name, new List<string>{new RegionInfo(t.LCID).Name+" 1", new RegionInfo(t.LCID).Name+" 2"}))
+        var countries = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .Select(c => new RegionInfo(c.LCID).Name).Distinct().ToList();
+
+        await context.RequiredDocuments.AddRangeAsync(countries
+            .Select(c => new RequiredDocument{ Country = c,
+                Links = new List<Link>{new Link{ Url = c+".gov"}, new Link{ Url = c+".com"}}})
             .ToList());
         
         await context.SaveChangesAsync();

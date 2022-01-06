@@ -45,11 +45,11 @@ namespace PS7Api.Controllers
             var links = await _context.RequiredDocuments
                 .Where(t => t.Country == nat.Name || t.Country == from.Name || t.Country == to.Name)
                 .Distinct()
-                .Include(t => t.Country)
-                .SelectMany(t => t.Country)
+                .Include(t => t.Links)
+                .SelectMany(t => t.Links)
+                .Select(l => l.Url)
                 .ToListAsync();
             return Ok(links);
-            //return Ok();
         }
     }
 }

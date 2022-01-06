@@ -1,13 +1,18 @@
-﻿namespace PS7Api.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PS7Api.Models;
 
 public class RequiredDocument
 {
-	public string Country { get; }
-	public List<string> Links { get; }
+	[Key]
+	public string Country { get; init; }
+	public List<Link> Links { get; init; }
 
-	public RequiredDocument(string country, List<string> links)
-	{
-		Country = country;
-		Links = links;
-	}
+}
+
+public class Link
+{
+	public int Id { get; set; }
+	public string Url { get; init; }
+	
 }
