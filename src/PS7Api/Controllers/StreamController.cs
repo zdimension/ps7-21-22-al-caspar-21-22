@@ -43,6 +43,11 @@ public class StreamController : ControllerBase
             passengers = passengers.Where(s => s.Type.Equals(passenger));
         }
 
+        if (!string.IsNullOrEmpty(frequency))
+        {
+            passengers = passengers.Where(s => s.Frequency == frequency);
+        }
+
         if (period != null)
         {
             passengers = passengers.Where(s => s.Period.Equals(period));
