@@ -53,7 +53,7 @@ public class StreamController : ControllerBase
         
         if (tollId != null)
         {
-            passengers = passengers.Where(p => p.EntryTollId == tollId || p.ExitTollId == tollId);
+            passengers = passengers.Where(p => p.EntryTollId == tollId || (p.ExitTollId.HasValue && p.ExitTollId == tollId));
         }
         
         if (passengerCount.passengerCountMin != null)

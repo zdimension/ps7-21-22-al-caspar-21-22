@@ -42,7 +42,7 @@ public static class DataGenerator
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
 
         var countries = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .Select(c => new RegionInfo(c.Name).Name).Distinct().ToList();
+            .Select(c => new RegionInfo(c.Name).TwoLetterISORegionName).Distinct().ToList();
 
         await context.RequiredDocuments.AddRangeAsync(countries
             .Select(c => new RequiredDocument{ Country = c,
