@@ -7,6 +7,7 @@ public class Ps7Context : IdentityDbContext<User>
 {
     public Ps7Context(DbContextOptions<Ps7Context> options) : base(options)
     {
+        
     }
 
     public DbSet<Document> Documents { get; set; }
@@ -14,4 +15,5 @@ public class Ps7Context : IdentityDbContext<User>
     
     //todo trouver pourquoi cette ligne fait tout planter même quand personne s'en sert
     public DbSet<RequiredDocument> RequiredDocuments { get; set; }
+    public DbSet<StreamFrontier> StreamsFrontiers { get; set; }
 }
