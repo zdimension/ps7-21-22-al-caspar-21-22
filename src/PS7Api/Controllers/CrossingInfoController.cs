@@ -5,17 +5,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic.CompilerServices;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 namespace PS7Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StreamController : ControllerBase
+public class CrossingInfoController : ControllerBase
 {
     private readonly Ps7Context _context;
-    private readonly ILogger<StreamController> _logger;
+    private readonly ILogger<CrossingInfoController> _logger;
 
-    public StreamController(ILogger<StreamController> logger, Ps7Context context)
+    public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context)
     {
         _logger = logger;
         _context = context;
@@ -24,7 +25,8 @@ public class StreamController : ControllerBase
     // ReSharper disable twice InconsistentNaming
     public record CountRange(int? passengerCountMin = null, int? passengerCountMax = null);
     
-    // GET: api/Stream/filter?typePassenger=&period=&crossingPoints=&nbPassengers=4
+    // GET: api/CrossingInfo/...
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetStream")]
     public async Task<IActionResult> Get(
         [FromQuery] CountRange passengerCount,
@@ -34,7 +36,7 @@ public class StreamController : ControllerBase
         [FromQuery] int? tollId = null
         )
     {
-        var passengers = _context.StreamsFrontiers.AsQueryable();
+        var passengers = _context.CrossingInfos.AsQueryable();
         
         if (startDate != null)
         {
@@ -67,5 +69,19 @@ public class StreamController : ControllerBase
         }
         
         return Ok(await passengers.ToListAsync());
+    }
+    
+    // POST: api/CrossingInfo/...
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    [HttpPost(Name = "PostStream")]
+    public async Task<IActionResult> Post(CrossingInfo info)
+    {
+        _context.CrossingInfos.Add(info);
+        
+        await _context.SaveChangesAsync();
+        
+        _logger.LogDebug("Posting crossing info");
+        
+        return CreatedAtAction("Get", new { id = info.Id }, info);
     }
 }

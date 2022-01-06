@@ -8,7 +8,7 @@ public class CrossingInfo
     public int Id { get; set; }
     public int NbPassengers { get; set; }
     public int TypeId { get; set; }
-    public TypePassenger Type { get; set; }
+    public TypePassenger? Type { get; set; }
     public DateTime EntryTollTime { get; set; }
     public DateTime? ExitTollTime { get; set; }
     public int EntryTollId { get; set; }
