@@ -8,8 +8,8 @@ public class CrossingInfo
     public int NbPassengers { get; set; }
     public int TypeId { get; set; }
     public TypePassenger Type { get; set; }
-    public DateTime WaitStart { get; set; }
-    public DateTime WaitEnd { get; set; }
+    public DateTime EntryTollTime { get; set; }
+    public DateTime ExitTollTime { get; set; }
     public int ExitTollId { get; set; }
     public TollOffice ExitToll { get; set; }
     public int EntryTollId { get; set; }

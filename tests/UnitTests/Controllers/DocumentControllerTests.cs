@@ -13,6 +13,9 @@ namespace PS7Api.UnitTests.Controllers;
 
 public class DocumentControllerTests
 {
+    
+    const string path = "../../../Image/declaration_douane.png";
+
     [Fact]
     public async Task Missing_Document_Returns_404()
     {
@@ -31,7 +34,6 @@ public class DocumentControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        const string path = "../../../Image/declaration_douane.png";
         var imgBytes = await File.ReadAllBytesAsync(path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
         await client.PostAsync("/api/Document", content);
@@ -65,7 +67,7 @@ public class DocumentControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        const string path = "../../../Image/declaration_douane.png";
+        // const string path = "../../../Image/declaration_douane.png";
         var imgBytes = await File.ReadAllBytesAsync(path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
         await client.PostAsync("/api/Document", content);

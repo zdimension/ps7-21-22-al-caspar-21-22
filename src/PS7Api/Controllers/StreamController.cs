@@ -38,12 +38,12 @@ public class StreamController : ControllerBase
         
         if (startDate != null)
         {
-            passengers = passengers.Where(p => p.WaitEnd >= startDate);
+            passengers = passengers.Where(p => p.EntryTollTime >= startDate);
         }
         
         if (endDate != null)
         {
-            passengers = passengers.Where(p => p.WaitEnd <= endDate);
+            passengers = passengers.Where(p => p.EntryTollTime <= endDate);
         }
         
         if (passengerType != null)
