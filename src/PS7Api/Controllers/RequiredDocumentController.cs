@@ -27,7 +27,6 @@ namespace PS7Api.Controllers
         [HttpGet()]
         public async Task<IActionResult> Get(string nationality, string origin, string destination)
         {
-            Console.WriteLine("BONJOUR ON EST ENTRÉ DANS LA FONCTION");
             RegionInfo nat;
             RegionInfo from;
             RegionInfo to;

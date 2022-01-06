@@ -30,4 +30,22 @@ public class RequiredDocumentTests
 		Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 		Assert.Equal(4, resData.Count);
 	}
+
+	[Fact]
+	public async Task Get_Docs_invalid_FromFR_ToEN_422()
+	{
+		await using var app = new Ps7Fixture();
+
+		var client = app.CreateClient();
+		var query = new Dictionary<string, string>
+		{
+			["nationality"] = "fr-F",
+			["origin"] = "fr-FR",
+			["destination"] = "en-GB",
+		};
+		
+		var response = await client.GetAsync(QueryHelpers.AddQueryString("/api/RequiredDocument/", query));
+
+		Assert.Equal(HttpStatusCode.UnprocessableEntity, response.StatusCode);
+	}
 }
