@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace PS7Api.Controllers;
+﻿namespace PS7Api.Models;
 
 public class TollOffice
 {
