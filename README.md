@@ -14,6 +14,11 @@
 # Definition Of Done
 - Tous les tests passent
 
+|       Sprint        | #1  | #2  | #3  |
+|        :---:        | :-: | :-: | :-: |
+| Nb points planifiés |  18 |     |     |
+| Nb points délivrés  |  32 |     |     |
+
 # Team
 **ARCIL Alexandre**
 
