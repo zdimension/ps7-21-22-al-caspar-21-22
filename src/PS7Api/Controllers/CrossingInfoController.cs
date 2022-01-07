@@ -27,8 +27,8 @@ public class CrossingInfoController : ControllerBase
     
     // GET: api/CrossingInfo/...
     [AuthorizeRoles(UserRole.CustomsOfficer)]
-    [HttpGet(Name = "GetStream")]
-    public async Task<IActionResult> Get(
+    [HttpGet(Name = "GetCrossingInfoFilter")]
+    public async Task<IActionResult> GetCrossingInfoFilter(
         [FromQuery] CountRange passengerCount,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
@@ -73,8 +73,8 @@ public class CrossingInfoController : ControllerBase
     
     // POST: api/CrossingInfo/...
     [AuthorizeRoles(UserRole.CustomsOfficer)]
-    [HttpPost(Name = "PostStream")]
-    public async Task<IActionResult> Post(CrossingInfo info)
+    [HttpPost(Name = "PostCrossingInfo")]
+    public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
     {
         _context.CrossingInfos.Add(info);
         
@@ -82,6 +82,18 @@ public class CrossingInfoController : ControllerBase
         
         _logger.LogDebug("Posting crossing info");
         
-        return CreatedAtAction("Get", new { id = info.Id }, info);
+        return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
+    }
+    
+    // GET: api/CrossingInfo/4
+    [HttpGet("{id}", Name = "GetCrossingInfo")]
+    public async Task<IActionResult> GetCrossingInfo(int id)
+    {
+        var info = await _context.CrossingInfos.Include(info => info.Id).FirstOrDefaultAsync(info => info.Id == id);
+
+        if (info == null)
+            return NotFound();
+
+        return Ok(info);
     }
 }
