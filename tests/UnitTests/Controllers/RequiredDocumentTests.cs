@@ -20,9 +20,9 @@ public class RequiredDocumentTests
 		var client = app.CreateClient();
 		var query = new Dictionary<string, string>
 		{
-			["nationality"] = "fr-FR",
-			["origin"] = "fr-FR",
-			["destination"] = "en-GB",
+			["nationality"] = "FR",
+			["origin"] = "FR",
+			["destination"] = "GB",
 		};
 		var response = await client.GetAsync(QueryHelpers.AddQueryString("/api/RequiredDocument/", query));
 		var resData = await response.Content.ReadFromJsonAsync<List<string>>();
