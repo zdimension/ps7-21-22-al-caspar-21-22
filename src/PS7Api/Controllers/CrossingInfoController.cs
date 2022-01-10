@@ -21,15 +21,13 @@ public class CrossingInfoController : ControllerBase
         _logger = logger;
         _context = context;
     }
-
-    // ReSharper disable twice InconsistentNaming
-    public record CountRange(int? passengerCountMin = null, int? passengerCountMax = null);
     
     // GET: api/CrossingInfo/...
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetCrossingInfoFilter")]
     public async Task<IActionResult> GetCrossingInfoFilter(
-        [FromQuery] CountRange passengerCount,
+        [FromQuery] int? passengerCountMin = null,
+        [FromQuery] int? passengerCountMax = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         [FromQuery] int? passengerType = null,
@@ -58,14 +56,14 @@ public class CrossingInfoController : ControllerBase
             passengers = passengers.Where(p => p.EntryTollId == tollId || (p.ExitTollId.HasValue && p.ExitTollId == tollId));
         }
         
-        if (passengerCount.passengerCountMin != null)
+        if (passengerCountMin != null)
         {
-            passengers = passengers.Where(p => p.NbPassengers >= passengerCount.passengerCountMin);
+            passengers = passengers.Where(p => p.NbPassengers >= passengerCountMin);
         }
         
-        if (passengerCount.passengerCountMax != null)
+        if (passengerCountMax != null)
         {
-            passengers = passengers.Where(p => p.NbPassengers <= passengerCount.passengerCountMax);
+            passengers = passengers.Where(p => p.NbPassengers <= passengerCountMax);
         }
         
         return Ok(await passengers.ToListAsync());

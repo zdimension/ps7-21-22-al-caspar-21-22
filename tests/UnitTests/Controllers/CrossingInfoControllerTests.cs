@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using PS7Api.Controllers;
 using PS7Api.Models;
+using PS7Api.Utilities;
 using Xunit;
 
 namespace PS7Api.UnitTests.Controllers;
@@ -26,7 +27,7 @@ public class CrossingInfoControllerTests
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
     }
-    
+
     [Fact]
     public async Task Filtering_Crossing_Infos_Return_200()
     {
@@ -50,20 +51,18 @@ public class CrossingInfoControllerTests
             EntryTollId = 1
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
-        
-        var query = new Dictionary<string, string>
+
+        var query = new Dictionary<string, string?>
         {
-            ["passengerRange"] = new CrossingInfoController.CountRange(0, 4).ToString(),
-            ["entryTollTime"] = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-            ["exitTollTime"] = DateTime.Now.AddDays(1).ToString(CultureInfo.CurrentCulture),
+            ["passengerRangeMin"] = "0",
+            ["passengerRangeMax"] = "4",
+            ["entryTollTime"] = DateTime.Now.Iso8601(),
+            ["exitTollTime"] = DateTime.Now.AddDays(1).Iso8601(),
             ["passengerType"] = "1",
             ["tollId"] = "1"
         };
-        
-        var passengerCount = new CrossingInfoController.CountRange(0, 4);
-        Debug.Write(JsonContent.Create(passengerCount));
-        
-        var res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/",  query!));
+
+        var res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query));
 
         var listCrossingInfo = res.Content.ReadFromJsonAsync<List<CrossingInfo>>();
 
