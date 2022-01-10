@@ -99,8 +99,8 @@ public class CrossingInfoController : ControllerBase
     [HttpPatch("{id}", Name = "AllowCrossing")]
     public async Task<IActionResult> AllowCrossing(
         [FromQuery] int id, 
-        [FromBody] TollOffice toll, 
-        [FromBody] DateTime? time = null)
+        [FromQuery] TollOffice toll, 
+        [FromQuery] DateTime? time = null)
     {
         var info = await _context.CrossingInfos.Include(info => info.Id).FirstOrDefaultAsync(info => info.Id == id);
        

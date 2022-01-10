@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PS7Api.Models;
 using PS7Api.Utilities;
 
@@ -37,7 +38,6 @@ public class DocumentController : ControllerBase
         var document = new Document { Image = ms.ToArray() };
 
         info.Documents.Add(document);
-        _context.Documents.Add(document);
         //todo appeler la validation de IOfficialValidationService
         //todo le changement d'état de document se fera en fonction de la réponse de la ligne précédente
         await _context.SaveChangesAsync();
@@ -49,7 +49,10 @@ public class DocumentController : ControllerBase
     [HttpGet("{id}", Name = "Get")]
     public async Task<IActionResult> Get(int id)
     {
-        var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
+        var doc = await _context.CrossingInfos
+            .Include(i => i.Documents).ThenInclude(d=> d.Anomalies)
+            .SelectMany(i => i.Documents)
+            .FirstOrDefaultAsync(doc => doc.Id == id);
 
         if (doc == null)
             return NotFound();
@@ -61,7 +64,7 @@ public class DocumentController : ControllerBase
     [HttpGet("{id}/Image", Name = "Image")]
     public async Task<IActionResult> Image(int id)
     {
-        var doc = await _context.Documents.FindAsync(id);
+        var doc = await findDocument(id);
 
         if (doc == null)
             return NotFound();
@@ -73,12 +76,17 @@ public class DocumentController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var doc = await _context.Documents.FindAsync(id);
-
+        var doc = await findDocument(id);
+        
         if (doc == null)
             return NotFound();
 
-        _context.Documents.Remove(doc);
+        var info = await _context.CrossingInfos.FirstOrDefaultAsync(i => i.Documents.Contains(doc));
+        if (info == null)
+            throw new Exception("Document not found in crossing info, suspected concurrency error");
+        info.Documents.Remove(doc);
+        
+        
         await _context.SaveChangesAsync();
         return Ok();
     }
@@ -92,7 +100,7 @@ public class DocumentController : ControllerBase
             return BadRequest();
         }
  
-        var documentFromDb = await _context.Documents.FindAsync(id);
+        var documentFromDb = await findDocument(id);
  
         if (documentFromDb == null)
         {
@@ -116,7 +124,8 @@ public class DocumentController : ControllerBase
     [HttpPost("{id}/Non-compliant")]
     public async Task<IActionResult> NonCompliant(int id, [FromBody] AnomaliesBody anomalies)
     {
-        var doc = await _context.Documents.FindAsync(id);
+        var doc = await findDocument(id);
+        
         if (doc == null)
             return NotFound();
         if (anomalies.Anomalies.Length == 0)
@@ -129,4 +138,13 @@ public class DocumentController : ControllerBase
     }
 
     public record AnomaliesBody(string[] Anomalies);
+
+    private async Task<Document?> findDocument(int id)
+    {
+        return await _context.CrossingInfos
+            .Include(i => i.Documents).ThenInclude(d => d.Anomalies)
+            .SelectMany(i => i.Documents)
+            .FirstOrDefaultAsync(doc => doc.Id == id);
+    }
+    
 }

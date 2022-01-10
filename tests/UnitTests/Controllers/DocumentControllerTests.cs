@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,10 +34,13 @@ public class DocumentControllerTests
         await using var app = new Ps7Fixture();
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var res = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = res.Content.ReadFromJsonAsync<CrossingInfo>();
 
         var imgBytes = await File.ReadAllBytesAsync(path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        await client.PostAsync("/api/Document/"+info.Id, content);
 
         var result = await client.GetAsync("/api/Document/1");
 
@@ -66,11 +70,14 @@ public class DocumentControllerTests
         await using var app = new Ps7Fixture();
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var res = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = res.Content.ReadFromJsonAsync<CrossingInfo>();
 
         // const string path = "../../../Image/declaration_douane.png";
         var imgBytes = await File.ReadAllBytesAsync(path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        await client.PostAsync("/api/Document/"+info.Id, content);
 
         var result = await client.GetAsync("/api/Document/1/Image");
 
@@ -86,9 +93,12 @@ public class DocumentControllerTests
         await using var app = new Ps7Fixture();
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var resInfo = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = resInfo.Content.ReadFromJsonAsync<CrossingInfo>();
 
         var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        await client.PostAsync("/api/Document/"+info.Id, content);
 
         var anomaliesDesc = new[] { "coin coin", "42", "GRRRR" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -109,9 +119,12 @@ public class DocumentControllerTests
         await using var app = new Ps7Fixture();
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var resInfo = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = resInfo.Content.ReadFromJsonAsync<CrossingInfo>();
 
         var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        await client.PostAsync("/api/Document/"+info.Id, content);
 
         var anomalies = new DocumentController.AnomaliesBody(Array.Empty<string>());
         var res = await client.PostAsync("/api/Document/1/Non-compliant", JsonContent.Create(anomalies));
@@ -130,8 +143,12 @@ public class DocumentControllerTests
 
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var resInfo = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = resInfo.Content.ReadFromJsonAsync<CrossingInfo>();
+        
         var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "document.jpg" } };
-        var res = await client.PostAsync("/api/Document", content);
+        var res = await client.PostAsync("/api/Document/"+info.Id, content);
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
     }
@@ -143,8 +160,12 @@ public class DocumentControllerTests
 
         var client = app.CreateClient();
         client.Login("customs");
+        
+        var resInfo = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var info = resInfo.Content.ReadFromJsonAsync<CrossingInfo>();
+        
         var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "document.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        await client.PostAsync("/api/Document/"+info.Id, content);
 
         var res = await client.DeleteAsync("/api/Document/1");
 
