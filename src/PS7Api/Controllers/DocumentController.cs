@@ -31,6 +31,9 @@ public class DocumentController : ControllerBase
         var document = new Document { Image = ms.ToArray() };
 
         _context.Documents.Add(document);
+        //todo appeler la validation de IOfficialValidationService
+        //todo le changement d'état de document se fera en fonction de la réponse de la ligne précédente
+        //todo mais du coup cette route doit être associée à un CrossingInfoController
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("Get", new { id = document.Id }, document);
@@ -118,6 +121,6 @@ public class DocumentController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok();
     }
-    
+
     public record AnomaliesBody(string[] Anomalies);
 }

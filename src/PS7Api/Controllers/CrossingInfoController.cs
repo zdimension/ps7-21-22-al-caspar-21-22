@@ -94,4 +94,24 @@ public class CrossingInfoController : ControllerBase
 
         return Ok(info);
     }
+
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    [HttpPatch("{id}", Name = "AllowCrossing")]
+    public async Task<IActionResult> AllowCrossing(
+        [FromQuery] int id, 
+        [FromBody] TollOffice toll, 
+        [FromBody] DateTime? time = null)
+    {
+        var info = await _context.CrossingInfos.Include(info => info.Id).FirstOrDefaultAsync(info => info.Id == id);
+       
+        if (info == null)
+            return NotFound();
+        
+        if (!info.AreAllDocumentsValid())
+            return Forbid();
+        
+        info.Exit(toll, time ?? DateTime.Now);
+
+        return NoContent();
+    }
 }
