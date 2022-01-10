@@ -38,7 +38,7 @@ public class CrossingInfoControllerTests
         var content = new CrossingInfo
         {
             EntryTollTime = new DateTime(2022, 3, 14, 20, 0, 0),
-            ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
+            //ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
             TypeId = 0,
             EntryTollId = 1
         };
@@ -46,7 +46,7 @@ public class CrossingInfoControllerTests
         content = new CrossingInfo
         {
             EntryTollTime = DateTime.Now,
-            ExitTollTime = DateTime.Now.AddDays(1),
+            //ExitTollTime = DateTime.Now.AddDays(1),
             TypeId = 1,
             EntryTollId = 1
         };

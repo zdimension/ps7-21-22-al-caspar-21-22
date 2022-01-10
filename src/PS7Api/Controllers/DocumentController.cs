@@ -22,18 +22,24 @@ public class DocumentController : ControllerBase
     // POST: api/Document
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost(Name = "Scan")]
-    public async Task<IActionResult> Scan(IFormFile file)
+    public async Task<IActionResult> Scan(int infoId,IFormFile file)
     {
+        var info = await _context.CrossingInfos.FirstOrDefaultAsync(i => i.Id == infoId);
+        if (info == null)
+        {
+            return NotFound();
+        }
+        
         _logger.LogDebug("Scanning document size {Len}", file.Length);
 
         var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var document = new Document { Image = ms.ToArray() };
 
+        info.Documents.Add(document);
         _context.Documents.Add(document);
         //todo appeler la validation de IOfficialValidationService
         //todo le changement d'état de document se fera en fonction de la réponse de la ligne précédente
-        //todo mais du coup cette route doit être associée à un CrossingInfoController
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("Get", new { id = document.Id }, document);

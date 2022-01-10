@@ -20,7 +20,7 @@ public class Ps7Context : IdentityDbContext<User>
         base.OnModelCreating(builder);
     }
 
-    public DbSet<Document> Documents { get; set; }
+    public DbSet<Document> Documents { get; set; } // todo reduntant?
     public DbSet<DocumentAnomaly> DocumentAnomalies { get; set; }
     public DbSet<RequiredDocument> RequiredDocuments { get; set; }
     public DbSet<CrossingInfo> CrossingInfos { get; set; }
