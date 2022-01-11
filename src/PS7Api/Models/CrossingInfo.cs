@@ -10,11 +10,11 @@ public class CrossingInfo
     public int TypeId { get; set; }
     public TypePassenger? Type { get; set; }
     public DateTime EntryTollTime { get; set; }
-    public DateTime? ExitTollTime { get; private set; } = null;
+    public DateTime? ExitTollTime { get; set; } = null;
     public int EntryTollId { get; set; }
     public TollOffice? EntryToll { get; set; }
-    public int? ExitTollId { get; private set; } = null;
-    public TollOffice? ExitToll { get; private set; } = null;
+    public int? ExitTollId { get; set; } = null;
+    public TollOffice? ExitToll { get; set; } = null;
     [NotMapped]
     public bool Valid => ExitTollId != null;
     
@@ -30,6 +30,7 @@ public class CrossingInfo
         ExitTollId = tollId;
         ExitTollTime = time;
     }
+    public Transport Transport { get; set; }
 }
 
 public abstract class TypePassenger
@@ -53,4 +54,9 @@ public class Merchendise : TypePassenger
     public string TypeVehicle { get; set; }
     public string TypeMerchendise { get; set; }
     public string QuantityMerchendise { get; set; }
+}
+
+public enum Transport
+{
+    Boat, Ship, Airplace, Car, Train, Truck
 }
