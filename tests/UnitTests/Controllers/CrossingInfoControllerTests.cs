@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using PS7Api.Controllers;
 using PS7Api.Models;
 using PS7Api.Utilities;
 using Xunit;
@@ -54,12 +51,12 @@ public class CrossingInfoControllerTests
 
         var query = new Dictionary<string, string?>
         {
-            ["passengerRangeMin"] = "0",
-            ["passengerRangeMax"] = "4",
-            ["entryTollTime"] = DateTime.Now.Iso8601(),
-            ["exitTollTime"] = DateTime.Now.AddDays(1).Iso8601(),
+            ["passengerCountMin"] = "0",
+            ["passengerCountMax"] = "4",
+            ["startDate"] = DateTime.Now.Iso8601(),
+            ["endDate"] = DateTime.Now.AddDays(1).Iso8601(),
             ["passengerType"] = "1",
-            ["tollId"] = "1"
+            ["tollId"] = "2"
         };
 
         var res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query));
