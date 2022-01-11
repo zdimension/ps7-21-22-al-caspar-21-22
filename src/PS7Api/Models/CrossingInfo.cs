@@ -22,8 +22,7 @@ public class CrossingInfo
 
     public bool AreAllDocumentsValid()
     {
-        return Documents.Count > 0 && Documents.TrueForAll(d => d.Verified);
-    }
+        return Documents.Count > 0 && Documents.TrueForAll(d => d.Verified && d.Anomalies.Count == 0);    }
 
     public void Exit(TollOffice toll, DateTime time)
     {

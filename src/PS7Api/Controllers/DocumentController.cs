@@ -40,6 +40,9 @@ public class DocumentController : ControllerBase
         info.Documents.Add(document);
         //todo appeler la validation de IOfficialValidationService
         //todo le changement d'état de document se fera en fonction de la réponse de la ligne précédente
+        //Temporary solution
+        document.Verified = true;
+        
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("Get", new { id = document.Id }, document);
@@ -133,6 +136,8 @@ public class DocumentController : ControllerBase
         foreach (var anomaly in anomalies.Anomalies)
             doc.Anomalies.Add(new DocumentAnomaly { DocumentId = id, Document = doc, Anomaly = anomaly });
         _logger.LogInformation("{}", doc.Anomalies);
+        if(doc.Verified && doc.Anomalies.Count > 0)
+            doc.Verified = false;
         await _context.SaveChangesAsync();
         return Ok();
     }
