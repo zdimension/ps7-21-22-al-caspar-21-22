@@ -21,17 +21,17 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "gb"},
-            ExitToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("gb"),
+            ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
             Transport = Transport.Car
@@ -58,17 +58,17 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "gb"},
-            ExitToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("gb"),
+            ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
             Transport = Transport.Car
@@ -95,17 +95,17 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "gb"},
-            ExitToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("gb"),
+            ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
             Transport = Transport.Car
@@ -128,17 +128,17 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
 
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "gb"},
-            ExitToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("gb"),
+            ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
             Transport = Transport.Car
@@ -162,17 +162,17 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
 
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "gb"},
-            ExitToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("gb"),
+            ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
             ExitTollTime = now,
             Transport = Transport.Car
@@ -194,26 +194,26 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 10, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 10, 12, 2, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 37, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross3 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 10, 11, 23, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 11, 58, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
 
@@ -238,34 +238,34 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross3 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross4 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         
@@ -292,34 +292,34 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross3 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross4 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
 
@@ -341,34 +341,34 @@ public class PassControllerTest
 
         CrossingInfo cross1 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross2 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross3 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
         CrossingInfo cross4 = new CrossingInfo
         {
-            EntryToll = new TollOffice {Country = "fr"},
+            EntryToll = new TollOffice("fr"),
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
-            ExitToll = new TollOffice {Country = "gb"},
+            ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
 

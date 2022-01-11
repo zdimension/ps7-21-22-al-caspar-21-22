@@ -45,10 +45,13 @@ public static class DataGenerator
             .Select(c => new RegionInfo(c.Name).TwoLetterISORegionName).Distinct().ToList();
 
         await context.RequiredDocuments.AddRangeAsync(countries
-            .Select(c => new RequiredDocument{ Country = c,
-                Links = new List<Link>{new Link{ Url = c+".gov"}, new Link{ Url = c+".com"}}})
+            .Select(c => new RequiredDocument
+            {
+                Country = c,
+                Links = new List<Link> { new(c + ".gov"), new(c + ".com") }
+            })
             .ToList());
-        
+
         await context.SaveChangesAsync();
     }
 }

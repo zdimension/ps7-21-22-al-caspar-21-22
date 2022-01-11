@@ -15,4 +15,8 @@ public class Link
 	public int Id { get; set; }
 	public string Url { get; init; }
 	
+	public Link(string url)
+	{
+		Url = url;
+	}
 }

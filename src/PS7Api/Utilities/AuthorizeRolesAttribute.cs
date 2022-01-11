@@ -7,7 +7,6 @@ public class AuthorizeRolesAttribute : AuthorizeAttribute
 {
     public AuthorizeRolesAttribute(params UserRole[] allowedRoles)
     {
-        var allowedRolesAsStrings = allowedRoles.Select(x => Enum.GetName(typeof(UserRole), x));
-        Roles = string.Join(",", allowedRolesAsStrings);
+        Roles = string.Join(",", allowedRoles.Select(x => Enum.GetName(typeof(UserRole), x)));
     }
 }

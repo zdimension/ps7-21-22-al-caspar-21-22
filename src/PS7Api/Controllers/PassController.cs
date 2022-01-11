@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
+using PS7Api.Utilities;
 
 namespace PS7Api.Controllers;
 
@@ -10,17 +11,20 @@ public class PassController : ControllerBase
 {
     
     private readonly Ps7Context _context;
-    private readonly ILogger<DocumentController> _logger;
+    private readonly ILogger<PassController> _logger;
 
-    public PassController(Ps7Context context, ILogger<DocumentController> logger)
+    public PassController(Ps7Context context, ILogger<PassController> logger)
     {
         _context = context;
         _logger = logger;
     }
 
     [HttpGet(Name = "")]
-    public async Task<IActionResult> Pass([FromQuery(Name = "from")] string from, [FromQuery(Name = "to")] string to,
-        [FromQuery(Name = "start")] DateTime? start = null, [FromQuery(Name = "end")] DateTime? end = null)
+    public async Task<IActionResult> Pass(
+        [FromQuery] string from, 
+        [FromQuery] string to,
+        [FromQuery] DateTime? start = null, 
+        [FromQuery] DateTime? end = null)
     {
         if (from.Length != 2 || to.Length != 2 || (end != null && start == null) || (end < start))
             return UnprocessableEntity();
@@ -29,11 +33,10 @@ public class PassController : ControllerBase
             .Where(info => info.EntryToll.Country == from)
             .Where(info => info.ExitToll != null && info.ExitToll.Country == to)
             .Where(info =>
-                (info.EntryTollTime >= (start ?? DateTime.Now.AddMinutes(-1)) &&
-                 info.EntryTollTime <= (end ?? DateTime.Now))
+                (info.EntryTollTime.IsBetween(start ?? DateTime.Now.AddMinutes(-1), end ?? DateTime.Now))
                 ||
-                (info.ExitTollTime != null && info.ExitTollTime >= (start ?? DateTime.Now.AddMinutes(-1)) &&
-                 info.ExitTollTime <= (end ?? DateTime.Now)))
+                (info.ExitTollTime != null &&
+                 info.ExitTollTime.Value.IsBetween(start ?? DateTime.Now.AddMinutes(-1), end ?? DateTime.Now)))
             .Include(info => info.EntryToll)
             .Include(info => info.ExitToll)
             .ToListAsync();
