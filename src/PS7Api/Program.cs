@@ -71,6 +71,11 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Services.AddCertificateManager();
+builder.Services.AddTransient<SymmetricEncryptDecrypt>();
+builder.Services.AddTransient<AsymmetricEncryptDecrypt>();
+builder.Services.AddTransient<DigitalSignatures>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
