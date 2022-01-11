@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
@@ -24,7 +19,7 @@ namespace PS7Api.Controllers
         }
 
         // GET: api/RequiredDocument/5
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> Get(string nationality, string origin, string destination)
         {
             RegionInfo nat;

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using PS7Api.Controllers;
 
 namespace PS7Api.Models;
 
@@ -10,10 +9,10 @@ public class CrossingInfo
     public int TypeId { get; set; }
     public TypePassenger? Type { get; set; }
     public DateTime EntryTollTime { get; set; }
-    public DateTime? ExitTollTime { get; set; } = null;
+    public DateTime? ExitTollTime { get; set; }
     public int EntryTollId { get; set; }
     public TollOffice? EntryToll { get; set; }
-    public int? ExitTollId { get; set; } = null;
+    public int? ExitTollId { get; set; }
     public TollOffice? ExitToll { get; set; } = null;
     [NotMapped]
     public bool Valid => ExitTollId != null;
@@ -22,7 +21,7 @@ public class CrossingInfo
     
     public bool AreAllDocumentsValid()
     {
-        return Documents.Count > 0 && Documents.All(d => d.Verified && d.Anomalies.Count == 0);
+        return Documents.Any() && Documents.All(d => d.Verified && !d.Anomalies.Any());
     }
 
     public void Exit(int tollId, DateTime time)

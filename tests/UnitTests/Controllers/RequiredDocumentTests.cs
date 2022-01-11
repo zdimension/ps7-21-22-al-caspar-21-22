@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
-using PS7Api.Models;
 using Xunit;
 
 namespace PS7Api.UnitTests.Controllers;

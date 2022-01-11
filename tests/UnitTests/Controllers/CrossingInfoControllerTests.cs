@@ -21,7 +21,7 @@ public class CrossingInfoControllerTests
 
         var client = app.CreateClient();
         client.Login("customs");
-        var content = new CrossingInfo(){EntryToll = new TollOffice(){Country = "fr"}};
+        var content = new CrossingInfo {EntryToll = new TollOffice {Country = "fr"}};
         var res = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
@@ -39,7 +39,7 @@ public class CrossingInfoControllerTests
             EntryTollTime = new DateTime(2022, 3, 14, 20, 0, 0),
             //ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
             TypeId = 0,
-            EntryToll = new TollOffice(){Country = "fr"}
+            EntryToll = new TollOffice {Country = "fr"}
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
         content = new CrossingInfo
@@ -47,7 +47,7 @@ public class CrossingInfoControllerTests
             EntryTollTime = DateTime.Now,
             //ExitTollTime = DateTime.Now.AddDays(1),
             TypeId = 1,
-            EntryToll = new TollOffice(){Country = "fr"}
+            EntryToll = new TollOffice {Country = "fr"}
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
 
