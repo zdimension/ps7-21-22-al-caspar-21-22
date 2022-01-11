@@ -83,15 +83,61 @@ public class CrossingInfoController : ControllerBase
         return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
     }
     
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    [HttpPost("{id}", Name = "ScanWithCrossingInfo")]
+    public async Task<IActionResult> Scan(int id, IFormFile file)
+    {
+        
+        var info = await _context.CrossingInfos.FirstOrDefaultAsync(info => info.Id == id);
+
+        if (info == null)
+            return NotFound();
+
+        _logger.LogDebug("Scanning document size {Len}", file.Length);
+
+        var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+        var document = new Document { Image = ms.ToArray() };
+
+        //todo call a real service to check if the document is valid
+        document.Verified = true;
+        info.Documents.Add(document);
+        
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
+    }
+    
     // GET: api/CrossingInfo/4
     [HttpGet("{id}", Name = "GetCrossingInfo")]
     public async Task<IActionResult> GetCrossingInfo(int id)
     {
-        var info = await _context.CrossingInfos.Include(info => info.Id).FirstOrDefaultAsync(info => info.Id == id);
+        var info = await _context.CrossingInfos.Include(c => c.Documents).FirstOrDefaultAsync(info => info.Id == id);
 
         if (info == null)
             return NotFound();
 
         return Ok(info);
     }
+
+    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    [HttpPatch(Name = "AllowCrossing")]
+    public async Task<IActionResult> AllowCrossing(
+        [FromQuery] int id,
+        [FromQuery] int tollId,
+        [FromBody] DateTime? time = null)
+    {
+        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(d => d.Anomalies).FirstOrDefaultAsync(info => info.Id == id);
+       
+        if (info == null)
+            return NotFound();
+        
+        if (!info.AreAllDocumentsValid())
+            return Forbid();
+        
+        info.Exit(tollId, time ?? DateTime.Now);
+
+        return NoContent();
+    }
+    
 }

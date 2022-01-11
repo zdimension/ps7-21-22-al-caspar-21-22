@@ -10,13 +10,26 @@ public class CrossingInfo
     public int TypeId { get; set; }
     public TypePassenger? Type { get; set; }
     public DateTime EntryTollTime { get; set; }
-    public DateTime? ExitTollTime { get; set; }
+    public DateTime? ExitTollTime { get; private set; } = null;
     public int EntryTollId { get; set; }
     public TollOffice? EntryToll { get; set; }
-    public int? ExitTollId { get; set; }
-    public TollOffice? ExitToll { get; set; }
+    public int? ExitTollId { get; private set; } = null;
+    public TollOffice? ExitToll { get; private set; } = null;
     [NotMapped]
     public bool Valid => ExitTollId != null;
+    
+    public ICollection<Document> Documents { get; set; } = new List<Document>();
+    
+    public bool AreAllDocumentsValid()
+    {
+        return Documents.Count > 0 && Documents.All(d => d.Verified && d.Anomalies.Count == 0);
+    }
+
+    public void Exit(int tollId, DateTime time)
+    {
+        ExitTollId = tollId;
+        ExitTollTime = time;
+    }
 }
 
 public abstract class TypePassenger

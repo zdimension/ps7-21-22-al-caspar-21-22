@@ -29,8 +29,11 @@ public class DocumentController : ControllerBase
         var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var document = new Document { Image = ms.ToArray() };
-
+        
         _context.Documents.Add(document);
+        
+        //todo call a real service to check if the document is valid
+       
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("Get", new { id = document.Id }, document);
