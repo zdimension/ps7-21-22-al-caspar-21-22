@@ -66,9 +66,14 @@ public class CrossingInfoController : ControllerBase
         return Ok(await passengers.ToListAsync());
     }
     
-    // POST: api/CrossingInfo/...
+    /// <summary>
+    /// Creates a new CrossingInfo based on the request body
+    /// </summary>
+    /// <param name="info">CrossingInfo to create</param>
+    /// <response code="201">CrossingInfo created</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost(Name = "PostCrossingInfo")]
+    [ProducesResponseType(typeof(CrossingInfo), 201)]
     public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
     {
         _context.CrossingInfos.Add(info);
@@ -80,8 +85,17 @@ public class CrossingInfoController : ControllerBase
         return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
     }
     
+    /// <summary>
+    /// Scans a file and creates a document to add to the given CrossingInfo
+    /// </summary>
+    /// <param name="id">CrossingInfo</param>
+    /// <param name="file"></param>
+    /// <response code="201">Document created</response>
+    /// <response code="404">CrossingInfo not found</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost("{id}/Document", Name = "ScanWithCrossingInfo")]
+    [ProducesResponseType(typeof(CrossingInfo), 201)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Scan(int id, IFormFile file)
     {
         
@@ -105,7 +119,11 @@ public class CrossingInfoController : ControllerBase
         return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
     }
     
-    // GET: api/CrossingInfo/4
+    /// <summary>
+    /// Gets the corresponding CrossingInfo
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="404">CrossingInfo not found</response>
     [HttpGet("{id}", Name = "GetCrossingInfo")]
     [ProducesResponseType(typeof(CrossingInfo), 200)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
@@ -119,8 +137,20 @@ public class CrossingInfoController : ControllerBase
         return Ok(info);
     }
 
+    /// <summary>
+    /// Allows crossing
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="tollId"></param>
+    /// <param name="time"></param>
+    /// <response code="204">Crossing allowed</response>
+    /// <response code="404">CrossingInfo not found</response>
+    /// <response code="403">Crossing not allowed (documents might not all be valid)</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPatch(Name = "AllowCrossing")]
+    [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
     public async Task<IActionResult> AllowCrossing(
         [FromQuery] int id,
         [FromQuery] int tollId,
@@ -133,6 +163,8 @@ public class CrossingInfoController : ControllerBase
         
         if (!info.AreAllDocumentsValid())
             return Forbid();
+        
+        //todo if already allowed
         
         info.Exit(tollId, time ?? DateTime.Now);
 
