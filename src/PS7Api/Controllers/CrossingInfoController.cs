@@ -21,6 +21,7 @@ public class CrossingInfoController : ControllerBase
     // GET: api/CrossingInfo/...
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetCrossingInfoFilter")]
+    [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
     public async Task<IActionResult> GetCrossingInfoFilter(
         [FromQuery] int? passengerCountMin = null,
         [FromQuery] int? passengerCountMax = null,
@@ -80,7 +81,7 @@ public class CrossingInfoController : ControllerBase
     }
     
     [AuthorizeRoles(UserRole.CustomsOfficer)]
-    [HttpPost("{id}", Name = "ScanWithCrossingInfo")]
+    [HttpPost("{id}/Document", Name = "ScanWithCrossingInfo")]
     public async Task<IActionResult> Scan(int id, IFormFile file)
     {
         
@@ -106,6 +107,8 @@ public class CrossingInfoController : ControllerBase
     
     // GET: api/CrossingInfo/4
     [HttpGet("{id}", Name = "GetCrossingInfo")]
+    [ProducesResponseType(typeof(CrossingInfo), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> GetCrossingInfo(int id)
     {
         var info = await _context.CrossingInfos.Include(c => c.Documents).FirstOrDefaultAsync(info => info.Id == id);

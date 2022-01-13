@@ -82,7 +82,7 @@ public class CrossingInfoControllerTests
  
         //scanning document
         var contentDoc = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        test = await client.PostAsync("/api/CrossingInfo/1", contentDoc);
+        test = await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
         var result = await client.GetAsync("/api/CrossingInfo/1");
         var info = result.Content.ReadFromJsonAsync<CrossingInfo>();
@@ -114,7 +114,7 @@ public class CrossingInfoControllerTests
  
         //scanning document
         var contentDoc = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        test = await client.PostAsync("/api/CrossingInfo/1", contentDoc);
+        test = await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
         var result = await client.GetAsync("/api/CrossingInfo/1");
         var info = result.Content.ReadFromJsonAsync<CrossingInfo>();
