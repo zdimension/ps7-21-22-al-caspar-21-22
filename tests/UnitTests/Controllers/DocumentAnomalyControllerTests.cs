@@ -206,7 +206,7 @@ public class DocumentAnomalyControllerTests
         client.Login("admin");
         var allDocAno = await client.DeleteAsync("/api/DocumentAnomaly/1");
 
-        Assert.Equal(HttpStatusCode.OK, allDocAno.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, allDocAno.StatusCode);
 
         var docs = await client.GetAsync("/api/DocumentAnomaly");
         var resAno = await docs.Content.ReadFromJsonAsync<List<DocumentAnomaly>>();
@@ -271,7 +271,7 @@ public class DocumentAnomalyControllerTests
         var allDocAno = await client.DeleteAsync("/api/DocumentAnomaly/1");
         var allDocAno2 = await client.DeleteAsync("/api/DocumentAnomaly/1");
 
-        Assert.Equal(HttpStatusCode.OK, allDocAno.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, allDocAno.StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, allDocAno2.StatusCode);
     }
 }

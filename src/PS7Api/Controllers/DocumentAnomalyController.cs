@@ -21,9 +21,11 @@ public class DocumentAnomalyController : ControllerBase
     /// Get all document anomalies
     /// </summary>
     /// <response code="200">Returns the list of document anomalies</response>
+    /// <response code="401">Unauthorized - route required authentication as Administrator</response>
     [AuthorizeRoles(UserRole.Administrator)]
     [HttpGet]
     [ProducesResponseType(typeof(DocumentAnomaly), 200)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     public IActionResult Get()
     {
         return Ok(_context.DocumentAnomalies.AsAsyncEnumerable());
@@ -34,10 +36,12 @@ public class DocumentAnomalyController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <response code="200">Returns the anomaly</response>
+    /// <response code="401">Unauthorized - route required authentication as Administrator</response>
     /// <response code="404">Anomaly not found</response>
     [AuthorizeRoles(UserRole.Administrator)]
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(DocumentAnomaly), 200)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Get(int id)
     {
@@ -49,9 +53,18 @@ public class DocumentAnomalyController : ControllerBase
         return Ok(docAno);
     }
 
-    // DELETE: api/DocumentAnomaly/5
+    /// <summary>
+    /// Deletes an anomaly by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="204">Anomaly deleted</response>
+    /// <response code="401">Unauthorized - route required authentication as Administrator</response>
+    /// <response code="404">Anomaly not found</response>
     [AuthorizeRoles(UserRole.Administrator)]
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Delete(int id)
     {
         var docAno = await _context.DocumentAnomalies.FindAsync(id);
@@ -61,6 +74,6 @@ public class DocumentAnomalyController : ControllerBase
 
         _context.DocumentAnomalies.Remove(docAno);
         await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 }

@@ -182,7 +182,7 @@ public class DocumentControllerTests
 
         var res = await client.DeleteAsync("/api/Document/1");
 
-        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, res.StatusCode);
     }
 
     [Fact]
