@@ -66,7 +66,7 @@ public class CircuitBreakerTest
     [Fact]
     public void Circuit_Opened()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        CircuitBreaker cb = new CircuitBreaker(5, 5, 1000);
         /*var respFunc = new Mock<Func<HttpResponseMessage>>();
         respFunc.Setup(message => message.Invoke()).Throws(new HttpRequestException());
 
@@ -83,7 +83,7 @@ public class CircuitBreakerTest
     [Fact]
     public void Circuit_Opened_Call()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        CircuitBreaker cb = new CircuitBreaker(5, 5, 1000);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new Mock<HttpResponseMessage>();
         respFunc.Setup(message => message.Invoke()).Returns(resp.Object);
