@@ -22,6 +22,18 @@ public class CrossingInfoController : ControllerBase
     }
 
     // GET: api/CrossingInfo/...
+    /// <summary>
+    /// Possibility to get a filtered list of crossing information
+    /// </summary>
+    /// <param name="validatedCrossing"></param>
+    /// <param name="passengerCountMin"></param>
+    /// <param name="passengerCountMax"></param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="passengerType"></param>
+    /// <param name="tollId"></param>
+    /// <response code="200">A list of crossing information is returned</response>
+    /// <response code="401">Unauthorized - route required authentication as CustomsOfficer</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetCrossingInfoFilter")]
     [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
