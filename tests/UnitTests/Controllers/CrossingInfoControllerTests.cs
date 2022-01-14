@@ -98,12 +98,10 @@ public class CrossingInfoControllerTests
         result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
         
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
-        
-        
     }
     
     [Fact]
-    public async Task Allow_Crossing_Infos_Return_403()
+    public async Task Allow_Crossing_Infos_With_Anomalies_Return_403()
     {
         await using var app = new Ps7Fixture();
 
@@ -136,8 +134,6 @@ public class CrossingInfoControllerTests
         result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
         
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
-        
-        
     }
     
     [Fact]
@@ -170,7 +166,66 @@ public class CrossingInfoControllerTests
         result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
         
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Allow_Crossing_No_Documents_Returns_403()
+    {
+        await using var app = new Ps7Fixture();
+
+        var client = app.CreateClient();
+        client.Login("customs");
         
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
+        Assert.Equal(HttpStatusCode.Created, test.StatusCode);
         
+        //allow crossing
+        var query = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "2"
+        };
+        var result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        
+        Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+    }
+    
+    [Fact]
+    public async Task Allow_Crossing_Infos_Twice_Return_209()
+    {
+        await using var app = new Ps7Fixture();
+
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
+        Assert.Equal(HttpStatusCode.Created, test.StatusCode);
+ 
+        //scanning document
+        var contentDoc = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        test = await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
+        Assert.Equal(HttpStatusCode.Created, test.StatusCode);
+        var result = await client.GetAsync("/api/CrossingInfo/1");
+        var info = result.Content.ReadFromJsonAsync<CrossingInfo>();
+        Assert.Single(info.Result!.Documents);
+        
+        //allow crossing
+        var query = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "2"
+        };
+        result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        
+        query = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "3"
+        };
+        result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+
+        Assert.Equal(HttpStatusCode.Conflict, result.StatusCode);
     }
 }

@@ -26,6 +26,7 @@ public class CrossingInfoController : ControllerBase
     [HttpGet(Name = "GetCrossingInfoFilter")]
     [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
     public async Task<IActionResult> GetCrossingInfoFilter(
+        [FromQuery] bool validatedCrossing = true,
         [FromQuery] int? passengerCountMin = null,
         [FromQuery] int? passengerCountMax = null,
         [FromQuery] DateTime? startDate = null,
@@ -35,6 +36,11 @@ public class CrossingInfoController : ControllerBase
     )
     {
         var passengers = _context.CrossingInfos.AsQueryable();
+        
+        if(validatedCrossing)
+        {
+            passengers = passengers.Where(p => p.Valid);
+        }
 
         if (startDate != null)
         {
@@ -158,12 +164,14 @@ public class CrossingInfoController : ControllerBase
     /// <param name="time"></param>
     /// <response code="204">Crossing allowed</response>
     /// <response code="404">CrossingInfo not found</response>
-    /// <response code="403">Crossing not allowed (documents might not all be valid)</response>
+    /// <response code="403">Crossing not allowed (documents might not all be valid or anomalies might have been reported)</response>
+    /// <response code="409">Crossing not allowed (because performed previously)</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPatch(Name = "AllowCrossing")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(ConflictResult), 409)]
     public async Task<IActionResult> AllowCrossing(
         [FromQuery] int id,
         [FromQuery] int tollId,
@@ -178,9 +186,12 @@ public class CrossingInfoController : ControllerBase
         if (!info.AreAllDocumentsValid())
             return Forbid();
 
-        //todo if already allowed
+        if (info.Valid)
+            return Conflict();
 
         info.Exit(tollId, time ?? DateTime.Now);
+        
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
