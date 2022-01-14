@@ -41,6 +41,7 @@ public class DocumentController : ControllerBase
 
     // GET: api/Document/5
     [HttpGet("{id}", Name = "Get")]
+    [ProducesResponseType(typeof(Document), 200)]
     public async Task<IActionResult> Get(int id)
     {
         var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
@@ -53,6 +54,8 @@ public class DocumentController : ControllerBase
 
     // GET: api/Document/5/Image
     [HttpGet("{id}/Image", Name = "Image")]
+    [ProducesResponseType(typeof(File), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Image(int id)
     {
         var doc = await _context.Documents.FindAsync(id);

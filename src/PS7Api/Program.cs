@@ -21,6 +21,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
     /*c.EnableAnnotations();
     c.SchemaFilter<CustomSchemaFilters>();*/
+    c.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PS7Api.xml"));
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 

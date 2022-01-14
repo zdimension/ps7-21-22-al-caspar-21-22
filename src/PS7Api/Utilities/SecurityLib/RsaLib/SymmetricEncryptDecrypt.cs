@@ -42,7 +42,7 @@ public class SymmetricEncryptDecrypt
     /// Encrypt using AES
     /// </summary>
     /// <param name="text">any text</param>
-    /// <param name="IV">Base64 IV string/param>
+    /// <param name="IV">Base64 IV string</param>
     /// <param name="key">Base64 key</param>
     /// <returns>Returns an encrypted string</returns>
     public string Encrypt(string text, string IV, string key)

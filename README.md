@@ -16,7 +16,7 @@
 
 |       Sprint        | #1  | #2  | #3  |
 |        :---:        | :-: | :-: | :-: |
-| Nb points planifiés |  18 |     |     |
+| Nb points planifiés |  18 |  42 |     |
 | Nb points délivrés  |  32 |     |     |
 
 # Team

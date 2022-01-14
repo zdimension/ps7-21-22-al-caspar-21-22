@@ -23,4 +23,5 @@ public class Ps7Context : IdentityDbContext<User>
     
     public DbSet<RequiredDocument> RequiredDocuments { get; set; } = null!;
     public DbSet<CrossingInfo> CrossingInfos { get; set; } = null!;
+    public DbSet<TollOffice> TollOffices { get; set; } = null!;
 }
