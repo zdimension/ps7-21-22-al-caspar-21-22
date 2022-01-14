@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,6 +13,9 @@ namespace PS7Api.UnitTests.Controllers;
 
 public class DocumentAnomalyControllerTests
 {
+    
+    const string Path = "../../../Image/declaration_douane.png";
+    
     [Fact]
     public async Task Empty_DocumentAnomaly_GET_Returns_200()
     {
@@ -102,8 +106,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -125,8 +135,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -146,8 +162,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -167,8 +189,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -193,8 +221,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -219,8 +253,14 @@ public class DocumentAnomalyControllerTests
         var client = app.CreateClient();
         client.Login("customs");
 
-        var content = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
-        await client.PostAsync("/api/Document", content);
+        var crossInfo = new CrossingInfo(new TollOffice("fr"));
+        var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
+        var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
+        var crossInfoId = crossInfoResp?.Id;
+        
+        var imgBytes = await File.ReadAllBytesAsync(Path);
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);

@@ -11,14 +11,23 @@ public class CrossingInfo
     public DateTime EntryTollTime { get; set; }
     public DateTime? ExitTollTime { get; set; }
     public int EntryTollId { get; set; }
-    public TollOffice? EntryToll { get; set; }
+    public TollOffice EntryToll { get; set; }
     public int? ExitTollId { get; set; }
-    public TollOffice? ExitToll { get; set; } = null;
+    public TollOffice? ExitToll { get; set; }
     [NotMapped]
     public bool Valid => ExitTollId != null;
     
     public ICollection<Document> Documents { get; set; } = new List<Document>();
-    
+
+    public CrossingInfo(TollOffice entryToll)
+    {
+        EntryToll = entryToll;
+    }
+
+    public CrossingInfo()
+    {
+    }
+
     public bool AreAllDocumentsValid()
     {
         return Documents.Any() && Documents.All(d => d.Verified && !d.Anomalies.Any());

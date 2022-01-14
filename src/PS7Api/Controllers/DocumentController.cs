@@ -20,7 +20,7 @@ public class DocumentController : ControllerBase
     }
 
     // POST: api/Document
-    [AuthorizeRoles(UserRole.CustomsOfficer)]
+    /*[AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost(Name = "Scan")]
     public async Task<IActionResult> Scan(IFormFile file)
     {
@@ -37,7 +37,7 @@ public class DocumentController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("Get", new { id = document.Id }, document);
-    }
+    }*/
 
     // GET: api/Document/5
     [HttpGet("{id}", Name = "Get")]

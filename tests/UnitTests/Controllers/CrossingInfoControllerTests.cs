@@ -21,7 +21,7 @@ public class CrossingInfoControllerTests
 
         var client = app.CreateClient();
         client.Login("customs");
-        var content = new CrossingInfo {EntryToll = new TollOffice("fr")};
+        var content = new CrossingInfo(new TollOffice("fr"));
         var res = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
@@ -34,23 +34,25 @@ public class CrossingInfoControllerTests
 
         var client = app.CreateClient();
         client.Login("customs");
-        var content = new CrossingInfo
+        var content = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 3, 14, 20, 0, 0),
             //ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
             TypeId = 0,
-            EntryTollId = 1
+            // EntryTollId = 1
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
-        content = new CrossingInfo
+        
+        content = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = DateTime.Now,
             //ExitTollTime = DateTime.Now.AddDays(1),
             TypeId = 1,
-            EntryTollId = 2
+            // EntryTollId = 2
         };
-        await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
-
+        var crossInfoCreation = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+        var crossInfo = await crossInfoCreation.Content.ReadFromJsonAsync<CrossingInfo>();
+        
         var query = new Dictionary<string, string?>
         {
             ["passengerCountMin"] = "0",
@@ -58,7 +60,7 @@ public class CrossingInfoControllerTests
             ["startDate"] = DateTime.Now.Iso8601(),
             ["endDate"] = DateTime.Now.AddDays(1).Iso8601(),
             ["passengerType"] = "1",
-            ["tollId"] = "2"
+            ["tollId"] = crossInfo?.ExitTollId.ToString()
         };
 
         var res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query));
@@ -77,7 +79,7 @@ public class CrossingInfoControllerTests
         var client = app.CreateClient();
         client.Login("customs");
         
-        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo(new TollOffice("fr"))));
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
  
         //scanning document
@@ -109,7 +111,7 @@ public class CrossingInfoControllerTests
         var client = app.CreateClient();
         client.Login("customs");
         
-        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo(new TollOffice("fr"))));
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
  
         //scanning document
