@@ -42,6 +42,7 @@ public class DocumentController : ControllerBase
     // GET: api/Document/5
     [HttpGet("{id}", Name = "Get")]
     [ProducesResponseType(typeof(Document), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Get(int id)
     {
         var doc = await _context.Documents.Include(doc => doc.Anomalies).FirstOrDefaultAsync(doc => doc.Id == id);
@@ -68,6 +69,8 @@ public class DocumentController : ControllerBase
 
     // DELETE: api/Document/5
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Delete(int id)
     {
         var doc = await _context.Documents.FindAsync(id);
@@ -77,11 +80,14 @@ public class DocumentController : ControllerBase
 
         _context.Documents.Remove(doc);
         await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
     
     // PATCH: api/Document/4
     [HttpPatch("{id}")]
+    [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document>? patchDoc)
     {
         if (patchDoc == null)
@@ -122,7 +128,7 @@ public class DocumentController : ControllerBase
             doc.Anomalies.Add(new DocumentAnomaly { DocumentId = id, Document = doc, Anomaly = anomaly });
         _logger.LogInformation("{}", doc.Anomalies);
         await _context.SaveChangesAsync();
-        return Ok();
+        return Ok(); //todo find a more relevant response
     }
     
     public record AnomaliesBody(string[] Anomalies);

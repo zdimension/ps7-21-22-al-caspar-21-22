@@ -53,10 +53,17 @@ public class DocumentAnomalyController : ControllerBase
         return Ok(docAno);
     }
 
-    // DELETE: api/DocumentAnomaly/5
+    /// <summary>
+    /// Deletes an anomaly by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="204">Anomaly deleted</response>
+    /// <response code="401">Unauthorized - route required authentication as Administrator</response>
+    /// <response code="404">Anomaly not found</response>
     [AuthorizeRoles(UserRole.Administrator)]
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Delete(int id)
     {
