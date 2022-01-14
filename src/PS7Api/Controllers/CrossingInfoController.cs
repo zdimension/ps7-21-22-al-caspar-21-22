@@ -21,7 +21,6 @@ public class CrossingInfoController : ControllerBase
         _context = context;
     }
 
-    // GET: api/CrossingInfo/...
     /// <summary>
     /// Possibility to get a filtered list of crossing information
     /// </summary>
