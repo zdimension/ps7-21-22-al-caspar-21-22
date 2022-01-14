@@ -19,6 +19,15 @@ public class MockValidationService : IOfficialValidationService
 {
     public ValidationResult ValidateDocument(Document document)
     {
+        if (document.Image.Length == 42)
+        {
+            return new ValidationFailure(new[]
+            {
+                "Document invalide (cas mock)",
+                "Erreur de document (cas mock)"
+            });
+        }
+        
         return new ValidationSuccess();
     }
 }

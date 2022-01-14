@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -139,4 +140,37 @@ public class CrossingInfoControllerTests
         
     }
     
+    [Fact]
+    public async Task Scan_Invalid_Document_No_Allow()
+    {
+        await using var app = new Ps7Fixture();
+
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
+        Assert.Equal(HttpStatusCode.Created, test.StatusCode);
+ 
+        //scanning document
+        var contentDoc = new MultipartFormDataContent { { new ByteArrayContent(new byte[42]), "file", "image.jpg" } };
+        test = await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
+        Assert.Equal(HttpStatusCode.Created, test.StatusCode);
+        var result = await client.GetAsync("/api/CrossingInfo/1");
+        var info = result.Content.ReadFromJsonAsync<CrossingInfo>();
+        Assert.Single(info.Result!.Documents);
+        
+        Assert.Equal(2, info.Result.Documents.First().Anomalies.Count);
+        
+        //allow crossing
+        var query = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "2"
+        };
+        result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        
+        Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+        
+        
+    }
 }

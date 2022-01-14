@@ -142,7 +142,7 @@ public class CrossingInfoController : ControllerBase
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> GetCrossingInfo(int id)
     {
-        var info = await _context.CrossingInfos.Include(c => c.Documents).FirstOrDefaultAsync(info => info.Id == id);
+        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(doc => doc.Anomalies).FirstOrDefaultAsync(info => info.Id == id);
 
         if (info == null)
             return NotFound();
