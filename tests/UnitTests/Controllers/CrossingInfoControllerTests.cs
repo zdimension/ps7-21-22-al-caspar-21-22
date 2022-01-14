@@ -43,6 +43,17 @@ public class CrossingInfoControllerTests
             EntryTollId = 1
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+       
+        var contentDoc = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
+        var validate = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "2"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+
+        
         content = new CrossingInfo
         {
             EntryTollTime = DateTime.Now,
@@ -51,6 +62,14 @@ public class CrossingInfoControllerTests
             EntryTollId = 2
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+        contentDoc = new MultipartFormDataContent { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/2/Document", contentDoc);
+        validate = new Dictionary<string, string?>
+        {
+            ["id"] = "2",
+            ["tollId"] = "2"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
 
         var query = new Dictionary<string, string?>
         {

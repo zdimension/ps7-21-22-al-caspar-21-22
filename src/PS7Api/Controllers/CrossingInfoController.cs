@@ -39,7 +39,7 @@ public class CrossingInfoController : ControllerBase
         
         if(validatedCrossing)
         {
-            passengers = passengers.Where(p => p.Valid);
+            passengers = passengers.Where(p => p.ExitTollId != null);
         }
 
         if (startDate != null)
