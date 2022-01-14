@@ -1,6 +1,9 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using PS7Api.Models;
+using PS7Api.Services;
 using PS7Api.Utilities;
 
 namespace PS7Api.Controllers;
@@ -17,7 +20,7 @@ public class CrossingInfoController : ControllerBase
         _logger = logger;
         _context = context;
     }
-    
+
     // GET: api/CrossingInfo/...
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetCrossingInfoFilter")]
@@ -29,43 +32,44 @@ public class CrossingInfoController : ControllerBase
         [FromQuery] DateTime? endDate = null,
         [FromQuery] int? passengerType = null,
         [FromQuery] int? tollId = null
-        )
+    )
     {
         var passengers = _context.CrossingInfos.AsQueryable();
-        
+
         if (startDate != null)
         {
             passengers = passengers.Where(p => p.EntryTollTime >= startDate);
         }
-        
+
         if (endDate != null)
         {
             passengers = passengers.Where(p => p.EntryTollTime <= endDate);
         }
-        
+
         if (passengerType != null)
         {
             passengers = passengers.Where(p => p.TypeId == passengerType);
         }
-        
+
         if (tollId != null)
         {
-            passengers = passengers.Where(p => p.EntryTollId == tollId || (p.ExitTollId.HasValue && p.ExitTollId == tollId));
+            passengers = passengers.Where(p =>
+                p.EntryTollId == tollId || (p.ExitTollId.HasValue && p.ExitTollId == tollId));
         }
-        
+
         if (passengerCountMin != null)
         {
             passengers = passengers.Where(p => p.NbPassengers >= passengerCountMin);
         }
-        
+
         if (passengerCountMax != null)
         {
             passengers = passengers.Where(p => p.NbPassengers <= passengerCountMax);
         }
-        
+
         return Ok(await passengers.ToListAsync());
     }
-    
+
     /// <summary>
     /// Creates a new CrossingInfo based on the request body
     /// </summary>
@@ -77,14 +81,14 @@ public class CrossingInfoController : ControllerBase
     public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
     {
         _context.CrossingInfos.Add(info);
-        
+
         await _context.SaveChangesAsync();
-        
+
         _logger.LogDebug("Posting crossing info");
-        
+
         return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
     }
-    
+
     /// <summary>
     /// Scans a file and creates a document to add to the given CrossingInfo
     /// </summary>
@@ -98,8 +102,7 @@ public class CrossingInfoController : ControllerBase
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Scan(int id, IFormFile file)
     {
-        
-        var info = await _context.CrossingInfos.FirstOrDefaultAsync(info => info.Id == id);
+        var info = await _context.CrossingInfos.Include(info => info.EntryToll).FirstOrDefaultAsync(info => info.Id == id);
 
         if (info == null)
             return NotFound();
@@ -110,15 +113,25 @@ public class CrossingInfoController : ControllerBase
         await file.CopyToAsync(ms);
         var document = new Document { Image = ms.ToArray() };
 
-        //todo call a real service to check if the document is valid
-        document.Verified = true;
+        var service = IOfficialValidationService.GetValidationService(new RegionInfo(info.EntryToll.Country));
+        switch (service.ValidateDocument(document))
+        {
+            case ValidationSuccess:
+                document.Verified = true;
+                break;
+            case ValidationFailure result:
+                document.Verified = false;
+                document.Anomalies.AddRange(result.Errors.Select(msg => new DocumentAnomaly { Anomaly = msg }));
+                break;
+        }
+
         info.Documents.Add(document);
-        
+
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
     }
-    
+
     /// <summary>
     /// Gets the corresponding CrossingInfo
     /// </summary>
@@ -156,19 +169,19 @@ public class CrossingInfoController : ControllerBase
         [FromQuery] int tollId,
         [FromBody] DateTime? time = null)
     {
-        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(d => d.Anomalies).FirstOrDefaultAsync(info => info.Id == id);
-       
+        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(d => d.Anomalies)
+            .FirstOrDefaultAsync(info => info.Id == id);
+
         if (info == null)
             return NotFound();
-        
+
         if (!info.AreAllDocumentsValid())
             return Forbid();
-        
+
         //todo if already allowed
-        
+
         info.Exit(tollId, time ?? DateTime.Now);
 
         return NoContent();
     }
-    
 }

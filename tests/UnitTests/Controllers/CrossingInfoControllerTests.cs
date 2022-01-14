@@ -39,7 +39,7 @@ public class CrossingInfoControllerTests
             EntryTollTime = new DateTime(2022, 3, 14, 20, 0, 0),
             //ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
             TypeId = 0,
-            EntryToll = new TollOffice("fr")
+            EntryTollId = 1
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
         content = new CrossingInfo
@@ -47,7 +47,7 @@ public class CrossingInfoControllerTests
             EntryTollTime = DateTime.Now,
             //ExitTollTime = DateTime.Now.AddDays(1),
             TypeId = 1,
-            EntryToll = new TollOffice("fr")
+            EntryTollId = 2
         };
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
 
@@ -77,7 +77,7 @@ public class CrossingInfoControllerTests
         var client = app.CreateClient();
         client.Login("customs");
         
-        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
  
         //scanning document
@@ -109,7 +109,7 @@ public class CrossingInfoControllerTests
         var client = app.CreateClient();
         client.Login("customs");
         
-        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo()));
+        var test = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(new CrossingInfo{EntryTollId = 1}));
         Assert.Equal(HttpStatusCode.Created, test.StatusCode);
  
         //scanning document

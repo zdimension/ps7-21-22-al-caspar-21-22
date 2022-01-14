@@ -44,6 +44,9 @@ public static class DataGenerator
         var countries = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
             .Select(c => new RegionInfo(c.Name).TwoLetterISORegionName).Distinct().ToList();
 
+        await context.TollOffices.AddRangeAsync(countries
+            .Select(c => new TollOffice(c)));
+
         await context.RequiredDocuments.AddRangeAsync(countries
             .Select(c => new RequiredDocument
             {
