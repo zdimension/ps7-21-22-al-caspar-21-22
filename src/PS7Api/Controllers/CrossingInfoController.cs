@@ -25,6 +25,7 @@ public class CrossingInfoController : ControllerBase
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpGet(Name = "GetCrossingInfoFilter")]
     [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     public async Task<IActionResult> GetCrossingInfoFilter(
         [FromQuery] bool validatedCrossing = true,
         [FromQuery] int? passengerCountMin = null,
@@ -81,9 +82,11 @@ public class CrossingInfoController : ControllerBase
     /// </summary>
     /// <param name="info">CrossingInfo to create</param>
     /// <response code="201">CrossingInfo created</response>
+    /// <response code="401">Unauthorized - route required authentication as CustomsOfficer</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost(Name = "PostCrossingInfo")]
     [ProducesResponseType(typeof(CrossingInfo), 201)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
     {
         _context.CrossingInfos.Add(info);
@@ -101,10 +104,12 @@ public class CrossingInfoController : ControllerBase
     /// <param name="id">CrossingInfo</param>
     /// <param name="file"></param>
     /// <response code="201">Document created</response>
+    /// <response code="401">Unauthorized - route required authentication as CustomsOfficer</response>
     /// <response code="404">CrossingInfo not found</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPost("{id}/Document", Name = "ScanWithCrossingInfo")]
     [ProducesResponseType(typeof(CrossingInfo), 201)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Scan(int id, IFormFile file)
     {
@@ -164,12 +169,14 @@ public class CrossingInfoController : ControllerBase
     /// <param name="time"></param>
     /// <response code="204">Crossing allowed</response>
     /// <response code="404">CrossingInfo not found</response>
+    /// <response code="401">Unauthorized - route required authentication as CustomsOfficer</response>
     /// <response code="403">Crossing not allowed (documents might not all be valid or anomalies might have been reported)</response>
     /// <response code="409">Crossing not allowed (because performed previously)</response>
     [AuthorizeRoles(UserRole.CustomsOfficer)]
     [HttpPatch(Name = "AllowCrossing")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(ForbidResult), 403)]
     [ProducesResponseType(typeof(ConflictResult), 409)]
     public async Task<IActionResult> AllowCrossing(

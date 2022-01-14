@@ -18,8 +18,17 @@ namespace PS7Api.Controllers
             _context = context;
         }
 
-        // GET: api/RequiredDocument/5
+        /// <summary>
+        /// Retrieves the links the the websites listing the required documents
+        /// </summary>
+        /// <param name="nationality">Given in the two-letter code defined in ISO 3166 for the country/region format</param>
+        /// <param name="origin">Given in the two-letter code defined in ISO 3166 for the country/region format</param>
+        /// <param name="destination">Given in the two-letter code defined in ISO 3166 for the country/region format</param>
+        /// <response code="200">Returns the list of links</response>
+        /// <response code="422">Invalid parameters given</response>
         [HttpGet]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(UnprocessableEntityResult), 422)]
         public async Task<IActionResult> Get(string nationality, string origin, string destination)
         {
             RegionInfo nat;
