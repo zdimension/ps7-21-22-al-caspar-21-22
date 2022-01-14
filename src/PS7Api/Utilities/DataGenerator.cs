@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PS7Api.Models;
+using TwoFactorAuthNet;
 
 namespace PS7Api.Utilities;
 
@@ -40,6 +41,18 @@ public static class DataGenerator
         customs.PasswordHash = new PasswordHasher<User>().HashPassword(customs, "customs");
         await userStore.CreateAsync(customs);
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
+        
+        var twofauser = new User
+        {
+            Email = "2fa@local",
+            NormalizedEmail = "2FA@LOCAL",
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = "2fa@local",
+            TwoFactorEnabled = true,
+            TwoFactorSecret = new TwoFactorAuth("PolyFrontier").CreateSecret(160)
+        };
+        twofauser.PasswordHash = new PasswordHasher<User>().HashPassword(twofauser, "2fa");
+        await userStore.CreateAsync(twofauser);
 
         var countries = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
             .Select(c => new RegionInfo(c.Name).TwoLetterISORegionName).Distinct().ToList();

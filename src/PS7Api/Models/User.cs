@@ -4,6 +4,7 @@ namespace PS7Api.Models;
 
 public class User : IdentityUser
 {
+    public string? TwoFactorSecret { get; set; }
 }
 
 public enum UserRole

@@ -2,10 +2,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Authenticator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PS7Api.Models;
+using TwoFactorAuthNet;
+using TwoFactorAuthNetSkiaSharpQrProvider;
 
 namespace PS7Api.Controllers;
 
@@ -16,6 +19,8 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<User> _userManager;
+    
+    private static TwoFactorAuth _authService = new TwoFactorAuth("PolyFrontier", qrcodeprovider: new SkiaSharpQrCodeProvider());
 
     public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
@@ -31,8 +36,29 @@ public class AuthController : ControllerBase
     {
         var user = await _userManager.FindByEmailAsync(body.Email);
 
-        if (user == null || !await _userManager.CheckPasswordAsync(user, body.Password))
+        if (user == null)
             return Unauthorized();
+
+        if (user.TwoFactorEnabled)
+        {
+            if (body.TwoFactorCode == null)
+                return Unauthorized(new
+                {
+                    Message =
+                        "Two factor authentication is enabled for this account. Please provide an authentication code."
+                });
+
+            var result = _authService.VerifyCode(user.TwoFactorSecret, body.TwoFactorCode);
+
+            if (!result)
+                return Unauthorized(new
+                {
+                    Message = "Invalid two factor authentication code."
+                });
+        }
+        
+        if (!await _userManager.CheckPasswordAsync(user, body.Password))
+                     return Unauthorized();
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -87,5 +113,15 @@ public class AuthController : ControllerBase
         return Ok(new { Status = "Success", Message = "User created successfully!" });
     }
 
-    public record LoginBody([EmailAddress] string Email, string Password);
+    [HttpGet("qr")]
+    public async Task<IActionResult> GetQrCode(string id)
+    {
+        var user = await _userManager.FindByEmailAsync(id);
+        if (user == null)
+            return NotFound();
+        
+        return Ok(_authService.GetQrCodeImageAsDataUri("PolyFrontier",  user.TwoFactorSecret));
+    }
+
+    public record LoginBody([EmailAddress] string Email, string Password, string? TwoFactorCode = null);
 }
