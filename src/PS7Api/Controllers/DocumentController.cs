@@ -39,7 +39,12 @@ public class DocumentController : ControllerBase
         return CreatedAtAction("Get", new { id = document.Id }, document);
     }*/
 
-    // GET: api/Document/5
+    /// <summary>
+    /// Gets a document
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="200">Returns the document</response>
+    /// <response code="404">Document not found</response>
     [HttpGet("{id}", Name = "Get")]
     [ProducesResponseType(typeof(Document), 200)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
@@ -53,7 +58,12 @@ public class DocumentController : ControllerBase
         return Ok(doc);
     }
 
-    // GET: api/Document/5/Image
+    /// <summary>
+    /// Gets the image of the document
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="200">Returns the image of the document</response>
+    /// <response code="404">Document not found</response>
     [HttpGet("{id}/Image", Name = "Image")]
     [ProducesResponseType(typeof(File), 200)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
@@ -67,7 +77,12 @@ public class DocumentController : ControllerBase
         return File(doc.Image, "image/*");
     }
 
-    // DELETE: api/Document/5
+    /// <summary>
+    /// Delete document
+    /// </summary>
+    /// <param name="id"></param>
+    /// <response code="204">Document deleted</response>
+    /// <response code="404">Document not found</response>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
@@ -83,16 +98,23 @@ public class DocumentController : ControllerBase
         return NoContent();
     }
     
-    // PATCH: api/Document/4
+    /// <summary>
+    /// Patch document
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="patchDoc"></param>
+    /// <response code="204">Invalid parameters given</response>
+    /// <response code="422">Invalid parameters given</response>
+    /// <response code="404">Document not found</response>
     [HttpPatch("{id}")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(UnprocessableEntityResult), 422)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document>? patchDoc)
     {
         if (patchDoc == null)
         {
-            return BadRequest();
+            return UnprocessableEntity();
         }
  
         var documentFromDb = await _context.Documents.FindAsync(id);
@@ -107,7 +129,7 @@ public class DocumentController : ControllerBase
         var isValid = TryValidateModel(documentFromDb);
  
         if (!isValid){
-            return BadRequest(ModelState);
+            return UnprocessableEntity(ModelState);
         }
  
         await _context.SaveChangesAsync();
