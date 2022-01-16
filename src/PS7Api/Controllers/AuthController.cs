@@ -136,7 +136,7 @@ public class AuthController : ControllerBase
     /// <response code="404">The given email isn't associate with an user</response>
     /// <response code="200">The image</response>
     [HttpGet("qr")]
-    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> GetQrCode(string id)
     {
