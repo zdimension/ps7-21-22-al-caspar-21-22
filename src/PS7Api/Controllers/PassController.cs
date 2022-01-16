@@ -28,6 +28,8 @@ public class PassController : ControllerBase
     /// <response code="422">If the 'from' or 'to' parameters are empty, if 'end' is specified without 'start' or if 'end' is before 'start'</response>
     /// <response code="200">A list of CrossingInfo</response>
     [HttpGet(Name = "Pass")]
+    [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
+    [ProducesResponseType(typeof(UnprocessableEntityResult), 422)]
     public async Task<IActionResult> Pass(
         [FromQuery] string from,
         [FromQuery] string to,

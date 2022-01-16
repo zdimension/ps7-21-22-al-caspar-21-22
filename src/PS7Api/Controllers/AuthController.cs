@@ -38,6 +38,8 @@ public class AuthController : ControllerBase
     /// <response code="401">Unauthorized - one or more login fields are wrong</response>
     [HttpPost]
     [Route("login")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     public async Task<IActionResult> Login([FromBody] LoginBody body)
     {
         var user = await _userManager.FindByEmailAsync(body.Email);
@@ -100,6 +102,8 @@ public class AuthController : ControllerBase
     /// <response code="200">User created</response>
     [HttpPost]
     [Route("register")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(StatusCodeResult), 500)]
     public async Task<IActionResult> Register([FromBody] LoginBody body)
     {
         var userExists = await _userManager.FindByEmailAsync(body.Email);
@@ -132,6 +136,8 @@ public class AuthController : ControllerBase
     /// <response code="404">The given email isn't associate with an user</response>
     /// <response code="200">The image</response>
     [HttpGet("qr")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> GetQrCode(string id)
     {
         var user = await _userManager.FindByEmailAsync(id);

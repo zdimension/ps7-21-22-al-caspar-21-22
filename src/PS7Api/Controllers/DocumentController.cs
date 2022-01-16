@@ -140,6 +140,9 @@ public class DocumentController : ControllerBase
     /// <response code="422">No anomalies in the body</response>
     /// <response code="200">Anomalies added to the file</response>
     [HttpPost("{id}/Non-compliant")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(UnprocessableEntityResult), 422)]
     public async Task<IActionResult> NonCompliant(int id, [FromBody] AnomaliesBody anomalies)
     {
         var doc = await _context.Documents.FindAsync(id);
