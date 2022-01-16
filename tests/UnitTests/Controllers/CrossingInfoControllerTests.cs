@@ -174,7 +174,7 @@ public class CrossingInfoControllerTests
         var info = result.Content.ReadFromJsonAsync<CrossingInfo>();
         Assert.Single(info.Result!.Documents);
         
-        Assert.Equal(2, info.Result.Documents.First().Anomalies.Count);
+        Assert.Equal(1, info.Result.Documents.First().Anomalies.Count);
         
         //allow crossing
         var query = new Dictionary<string, string?>
