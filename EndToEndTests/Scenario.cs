@@ -82,8 +82,8 @@ public class Scenario
         var crossInfoId = crossInfoResp?.Id;
         
         var imgBytes = await File.ReadAllBytesAsync("../../../Image/declaration_douane.png");
-        var content = new MultipartFormDataContent { { new ByteArrayContent(new byte[42]), "file", "image.jpg" } };
-        var res = await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        var contentAno = new MultipartFormDataContent { { new ByteArrayContent(new byte[42]), "file", "image.jpg" } };
+        var res = await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", contentAno);
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
         
@@ -101,7 +101,7 @@ public class Scenario
         crossInfoId = crossInfoResp?.Id;
         
         imgBytes = await File.ReadAllBytesAsync("../../../Image/declaration_douane.png");
-        content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
+        var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
         res = await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
@@ -112,7 +112,7 @@ public class Scenario
             ["tollId"] = "2"
         };
         //Leslie signale une anomalie
-        var anomaliesDesc = new[] { "coin coin", "42", "GRRRR" };
+        var anomaliesDesc = new[] { "Nature invalide : Produits chimiques", "Masse invalide : 5465 Kg", "Peu collaboratif" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
         res = await client.PostAsync("/api/Document/1/Non-compliant", JsonContent.Create(anomalies));
      
@@ -121,7 +121,18 @@ public class Scenario
         Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         
         
-        //todo Sebastian gère les anomalies
+        //Sebastian gère les anomalies
+        client.Login("admin");
+        var allDocAno = await client.GetAsync("/api/DocumentAnomaly");
+        var resAnomaly = await allDocAno.Content.ReadFromJsonAsync<List<DocumentAnomaly>>();
+        Assert.Equal(HttpStatusCode.OK, allDocAno.StatusCode);
+        Assert.Equal(4, resAnomaly!.Count);
+        var deleteAno = await client.DeleteAsync("/api/DocumentAnomaly/3");
+        Assert.Equal(HttpStatusCode.NoContent, deleteAno.StatusCode);
+        allDocAno = await client.GetAsync("/api/DocumentAnomaly");
+        resAnomaly = await allDocAno.Content.ReadFromJsonAsync<List<DocumentAnomaly>>();
+        Assert.Equal(HttpStatusCode.OK, allDocAno.StatusCode);
+        Assert.Equal(3, resAnomaly!.Count);
     }
 
     [Fact]

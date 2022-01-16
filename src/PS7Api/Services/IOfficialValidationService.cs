@@ -23,8 +23,7 @@ public class MockValidationService : IOfficialValidationService
         {
             return new ValidationFailure(new[]
             {
-                "Document invalide (cas mock)",
-                "Erreur de document (cas mock)"
+                "Document invalide (cas mock)"
             });
         }
         

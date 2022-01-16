@@ -24,7 +24,7 @@ public class DocumentAnomalyController : ControllerBase
     /// <response code="401">Unauthorized - route required authentication as Administrator</response>
     [AuthorizeRoles(UserRole.Administrator)]
     [HttpGet]
-    [ProducesResponseType(typeof(DocumentAnomaly), 200)]
+    [ProducesResponseType(typeof(IAsyncEnumerable<DocumentAnomaly>), 200)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     public IActionResult Get()
     {
