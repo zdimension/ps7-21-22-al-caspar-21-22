@@ -41,7 +41,7 @@ public static class DataGenerator
         customs.PasswordHash = new PasswordHasher<User>().HashPassword(customs, "customs");
         await userStore.CreateAsync(customs);
         await userStore.AddToRoleAsync(customs, UserRole.CustomsOfficer.Name());
-        
+
         var twofauser = new User
         {
             Email = "2fa@local",

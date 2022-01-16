@@ -9,6 +9,7 @@ public class Document
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public bool Verified { get; set; } = false;
     public ICollection<DocumentAnomaly> Anomalies { get; set; } = new List<DocumentAnomaly>();
+
     [JsonIgnore]
     public CrossingInfo CrossingInfo { get; set; }
 }

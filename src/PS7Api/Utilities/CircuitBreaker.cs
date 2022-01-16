@@ -4,15 +4,14 @@ namespace PS7Api.Utilities;
 
 public class CircuitBreaker
 {
-    public State State { get; private set; }
-    public int FailCount { get; private set; }
-    public int SuccessCount { get; private set; }
     private readonly int _failThreshold;
     private readonly int _successThreshold;
     private readonly int _timeout;
 
-    public CircuitBreaker(): this(5, 5, 30000) {}
-    
+    public CircuitBreaker() : this(5, 5, 30000)
+    {
+    }
+
     public CircuitBreaker(int failThreshold, int successThreshold, int timeout)
     {
         State = State.Closed;
@@ -21,15 +20,20 @@ public class CircuitBreaker
         _timeout = timeout;
     }
 
+    public State State { get; private set; }
+    public int FailCount { get; private set; }
+    public int SuccessCount { get; private set; }
+
     public HttpResponseMessage Send(Func<HttpResponseMessage> req)
     {
         switch (State)
         {
-            case State.Closed: default:
+            case State.Closed:
+            default:
                 try
                 {
                     var response = req.Invoke();
-                    if(IsServerOut(response))
+                    if (IsServerOut(response))
                         OnFail();
                     return response;
                 }
@@ -42,7 +46,7 @@ public class CircuitBreaker
                 try
                 {
                     var response = req.Invoke();
-                    if(IsServerOut(response))
+                    if (IsServerOut(response))
                         Open();
                     else
                         SuccessCount++;
@@ -51,13 +55,14 @@ public class CircuitBreaker
                         FailCount = 0;
                         State = State.Closed;
                     }
+
                     return response;
                 }
                 catch (Exception e)
                 {
                     Open();
                     throw;
-                } 
+                }
             case State.Opened:
                 throw new CircuitBreakerOpenedException();
         }
@@ -67,9 +72,7 @@ public class CircuitBreaker
     {
         FailCount++;
         if (FailCount == _failThreshold)
-        {
             Open();
-        }
     }
 
     private async void Open()
@@ -86,14 +89,14 @@ public class CircuitBreaker
     {
         return response.StatusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable;
     }
-
 }
 
 public enum State
 {
-    Closed, HalfOpened, Opened
+    Closed,
+    HalfOpened,
+    Opened
 }
-
 
 public class CircuitBreakerOpenedException : Exception
 {

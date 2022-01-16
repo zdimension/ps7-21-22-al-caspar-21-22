@@ -13,8 +13,7 @@ namespace PS7Api.UnitTests.Controllers;
 
 public class DocumentControllerTests
 {
-    
-    const string Path = "../../../Image/declaration_douane.png";
+    private const string Path = "../../../Image/declaration_douane.png";
 
     [Fact]
     public async Task Missing_Document_Returns_404()
@@ -38,12 +37,12 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
-        
-        var result = await client.GetAsync("/api/Document/"+crossInfoId);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
+
+        var result = await client.GetAsync("/api/Document/" + crossInfoId);
 
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
 
@@ -77,10 +76,10 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var result = await client.GetAsync("/api/Document/1/Image");
 
@@ -101,10 +100,10 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "coin coin", "42", "GRRRR" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -130,10 +129,10 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomalies = new DocumentController.AnomaliesBody(Array.Empty<string>());
         var res = await client.PostAsync("/api/Document/1/Non-compliant", JsonContent.Create(anomalies));
@@ -156,10 +155,10 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        var res = await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        var res = await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
     }
@@ -175,10 +174,10 @@ public class DocumentControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var res = await client.DeleteAsync("/api/Document/1");
 
@@ -204,16 +203,16 @@ public class DocumentControllerTests
         await using var app = new Ps7Fixture();
         var client = app.CreateClient();
         client.Login("customs");
-        
+
         var crossInfo = new CrossingInfo(new TollOffice("fr"));
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         client.Logout();
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        var res = await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        var res = await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         Assert.Equal(HttpStatusCode.Unauthorized, res.StatusCode);
     }

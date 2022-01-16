@@ -22,7 +22,7 @@ public class CrossingInfoController : ControllerBase
     }
 
     /// <summary>
-    /// Possibility to get a filtered list of crossing information
+    ///     Possibility to get a filtered list of crossing information
     /// </summary>
     /// <param name="validatedCrossing"></param>
     /// <param name="passengerCountMin"></param>
@@ -48,48 +48,34 @@ public class CrossingInfoController : ControllerBase
     )
     {
         var passengers = _context.CrossingInfos.AsQueryable();
-        
-        if(validatedCrossing)
-        {
+
+        if (validatedCrossing)
             passengers = passengers.Where(p => p.ExitTollId != null);
-        }
 
         if (startDate != null)
-        {
             passengers = passengers.Where(p => p.EntryTollTime >= startDate);
-        }
 
         if (endDate != null)
-        {
             passengers = passengers.Where(p => p.EntryTollTime <= endDate);
-        }
 
         if (passengerType != null)
-        {
             passengers = passengers.Where(p => p.TypeId == passengerType);
-        }
 
         if (tollId != null)
-        {
             passengers = passengers.Where(p =>
-                p.EntryTollId == tollId || (p.ExitTollId.HasValue && p.ExitTollId == tollId));
-        }
+                p.EntryTollId == tollId || p.ExitTollId.HasValue && p.ExitTollId == tollId);
 
         if (passengerCountMin != null)
-        {
             passengers = passengers.Where(p => p.NbPassengers >= passengerCountMin);
-        }
 
         if (passengerCountMax != null)
-        {
             passengers = passengers.Where(p => p.NbPassengers <= passengerCountMax);
-        }
 
         return Ok(await passengers.ToListAsync());
     }
 
     /// <summary>
-    /// Creates a new CrossingInfo based on the request body
+    ///     Creates a new CrossingInfo based on the request body
     /// </summary>
     /// <param name="info">CrossingInfo to create</param>
     /// <response code="201">CrossingInfo created</response>
@@ -110,7 +96,7 @@ public class CrossingInfoController : ControllerBase
     }
 
     /// <summary>
-    /// Scans a file and creates a document to add to the given CrossingInfo
+    ///     Scans a file and creates a document to add to the given CrossingInfo
     /// </summary>
     /// <param name="id">CrossingInfo</param>
     /// <param name="file"></param>
@@ -124,7 +110,8 @@ public class CrossingInfoController : ControllerBase
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> Scan(int id, IFormFile file)
     {
-        var info = await _context.CrossingInfos.Include(info => info.EntryToll).FirstOrDefaultAsync(info => info.Id == id);
+        var info = await _context.CrossingInfos.Include(info => info.EntryToll)
+            .FirstOrDefaultAsync(info => info.Id == id);
 
         if (info == null)
             return NotFound();
@@ -155,7 +142,7 @@ public class CrossingInfoController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the corresponding CrossingInfo
+    ///     Gets the corresponding CrossingInfo
     /// </summary>
     /// <param name="id"></param>
     /// <response code="404">CrossingInfo not found</response>
@@ -164,7 +151,8 @@ public class CrossingInfoController : ControllerBase
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> GetCrossingInfo(int id)
     {
-        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(doc => doc.Anomalies).FirstOrDefaultAsync(info => info.Id == id);
+        var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(doc => doc.Anomalies)
+            .FirstOrDefaultAsync(info => info.Id == id);
 
         if (info == null)
             return NotFound();
@@ -173,7 +161,7 @@ public class CrossingInfoController : ControllerBase
     }
 
     /// <summary>
-    /// Allows crossing
+    ///     Allows crossing
     /// </summary>
     /// <param name="id"></param>
     /// <param name="tollId"></param>
@@ -208,7 +196,7 @@ public class CrossingInfoController : ControllerBase
             return Conflict();
 
         info.Exit(tollId, time ?? DateTime.Now);
-        
+
         await _context.SaveChangesAsync();
 
         return NoContent();

@@ -13,20 +13,20 @@ public class CircuitBreakerTest
     [Fact]
     public void Fine()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        var cb = new CircuitBreaker();
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new Mock<HttpResponseMessage>();
         respFunc.Setup(message => message.Invoke()).Returns(resp.Object);
-        
+
         cb.Send(respFunc.Object);
         Assert.Equal(State.Closed, cb.State);
         Assert.Equal(0, cb.FailCount);
     }
-    
+
     [Fact]
     public void One_Fault()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        var cb = new CircuitBreaker();
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         respFunc.Setup(message => message.Invoke()).Throws(new HttpRequestException());
 
@@ -34,11 +34,11 @@ public class CircuitBreakerTest
         Assert.Equal(State.Closed, cb.State);
         Assert.Equal(1, cb.FailCount);
     }
-    
+
     [Fact]
     public void Server_Unavailable()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        var cb = new CircuitBreaker();
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new HttpResponseMessage();
         resp.StatusCode = HttpStatusCode.ServiceUnavailable;
@@ -48,11 +48,11 @@ public class CircuitBreakerTest
         Assert.Equal(State.Closed, cb.State);
         Assert.Equal(1, cb.FailCount);
     }
-    
+
     [Fact]
     public void Too_Many_Request()
     {
-        CircuitBreaker cb = new CircuitBreaker();
+        var cb = new CircuitBreaker();
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new HttpResponseMessage();
         resp.StatusCode = HttpStatusCode.ServiceUnavailable;
@@ -62,11 +62,11 @@ public class CircuitBreakerTest
         Assert.Equal(State.Closed, cb.State);
         Assert.Equal(1, cb.FailCount);
     }
-    
+
     [Fact]
     public void Circuit_Opened()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1000);
+        var cb = new CircuitBreaker(5, 5, 1000);
         /*var respFunc = new Mock<Func<HttpResponseMessage>>();
         respFunc.Setup(message => message.Invoke()).Throws(new HttpRequestException());
 
@@ -79,11 +79,11 @@ public class CircuitBreakerTest
         Assert.Equal(State.Opened, cb.State);
         Assert.Equal(5, cb.FailCount);
     }
-    
+
     [Fact]
     public void Circuit_Opened_Call()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1000);
+        var cb = new CircuitBreaker(5, 5, 1000);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new Mock<HttpResponseMessage>();
         respFunc.Setup(message => message.Invoke()).Returns(resp.Object);
@@ -92,11 +92,11 @@ public class CircuitBreakerTest
         Assert.Throws<CircuitBreakerOpenedException>(() => { cb.Send(respFunc.Object); });
         Assert.Equal(State.Opened, cb.State);
     }
-    
+
     [Fact]
     public void Circuit_Half_Opened()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1);
+        var cb = new CircuitBreaker(5, 5, 1);
         SetOpened(cb);
 
         Task.Delay(50).Wait();
@@ -107,21 +107,21 @@ public class CircuitBreakerTest
     [Fact]
     public void Circuit_Half_Opened_Fault()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1);
+        var cb = new CircuitBreaker(5, 5, 1);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         respFunc.Setup(message => message.Invoke()).Throws(new HttpRequestException());
         SetOpened(cb);
         Task.Delay(50).Wait();
 
         Send(cb, respFunc);
-        
+
         Assert.Equal(State.Opened, cb.State);
     }
-    
+
     [Fact]
     public void Circuit_Half_Opened_Service_Unavailable()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1);
+        var cb = new CircuitBreaker(5, 5, 1);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new HttpResponseMessage();
         resp.StatusCode = HttpStatusCode.ServiceUnavailable;
@@ -130,14 +130,14 @@ public class CircuitBreakerTest
         Task.Delay(50).Wait();
 
         Send(cb, respFunc);
-        
+
         Assert.Equal(State.Opened, cb.State);
     }
-    
+
     [Fact]
     public void Circuit_Half_Opened_Success()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1);
+        var cb = new CircuitBreaker(5, 5, 1);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new Mock<HttpResponseMessage>();
         respFunc.Setup(message => message.Invoke()).Returns(resp.Object);
@@ -145,15 +145,15 @@ public class CircuitBreakerTest
         Task.Delay(50).Wait();
 
         cb.Send(respFunc.Object);
-        
+
         Assert.Equal(State.HalfOpened, cb.State);
         Assert.Equal(1, cb.SuccessCount);
     }
-    
+
     [Fact]
     public void Circuit_Half_To_Closed()
     {
-        CircuitBreaker cb = new CircuitBreaker(5, 5, 1);
+        var cb = new CircuitBreaker(5, 5, 1);
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         var resp = new Mock<HttpResponseMessage>();
         respFunc.Setup(message => message.Invoke()).Returns(resp.Object);
@@ -165,7 +165,7 @@ public class CircuitBreakerTest
         cb.Send(respFunc.Object);
         cb.Send(respFunc.Object);
         cb.Send(respFunc.Object);
-        
+
         Assert.Equal(State.Closed, cb.State);
         Assert.Equal(0, cb.FailCount);
     }
@@ -175,10 +175,8 @@ public class CircuitBreakerTest
     {
         var respFunc = new Mock<Func<HttpResponseMessage>>();
         respFunc.Setup(message => message.Invoke()).Throws(new HttpRequestException());
-        for (int i = 0; i < 5; i++)
-        {
+        for (var i = 0; i < 5; i++)
             Send(cb, respFunc);
-        }
     }
 
     private void Send(CircuitBreaker cb, Mock<Func<HttpResponseMessage>> mock)
@@ -192,5 +190,4 @@ public class CircuitBreakerTest
             // ignored
         }
     }
-    
 }

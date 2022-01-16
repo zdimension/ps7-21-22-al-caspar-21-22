@@ -15,11 +15,12 @@ namespace PS7Api.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
+    private static readonly TwoFactorAuth AuthService =
+        new("PolyFrontier", qrcodeprovider: new SkiaSharpQrCodeProvider());
+
     private readonly IConfiguration _configuration;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<User> _userManager;
-    
-    private static TwoFactorAuth _authService = new TwoFactorAuth("PolyFrontier", qrcodeprovider: new SkiaSharpQrCodeProvider());
 
     public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
@@ -47,7 +48,7 @@ public class AuthController : ControllerBase
                         "Two factor authentication is enabled for this account. Please provide an authentication code."
                 });
 
-            var result = _authService.VerifyCode(user.TwoFactorSecret, body.TwoFactorCode);
+            var result = AuthService.VerifyCode(user.TwoFactorSecret, body.TwoFactorCode);
 
             if (!result)
                 return Unauthorized(new
@@ -55,9 +56,9 @@ public class AuthController : ControllerBase
                     Message = "Invalid two factor authentication code."
                 });
         }
-        
+
         if (!await _userManager.CheckPasswordAsync(user, body.Password))
-                     return Unauthorized();
+            return Unauthorized();
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -118,8 +119,8 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByEmailAsync(id);
         if (user == null)
             return NotFound();
-        
-        return Ok(_authService.GetQrCodeImageAsDataUri("PolyFrontier",  user.TwoFactorSecret));
+
+        return Ok(AuthService.GetQrCodeImageAsDataUri("PolyFrontier", user.TwoFactorSecret));
     }
 
     public record LoginBody([EmailAddress] string Email, string Password, string? TwoFactorCode = null);

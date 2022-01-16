@@ -10,7 +10,6 @@ namespace PS7Api.UnitTests.Controllers;
 
 public class PassControllerTest
 {
-
     [Fact]
     public async Task Fr_To_Gb()
     {
@@ -19,15 +18,15 @@ public class PassControllerTest
         client.Login("customs");
         var now = DateTime.Now;
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = now,
             ExitTollTime = now,
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("gb"))
+
+        var cross2 = new CrossingInfo(new TollOffice("gb"))
         {
             ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
@@ -45,7 +44,7 @@ public class PassControllerTest
         Assert.Equal("fr", resCross.EntryToll.Country);
         Assert.Equal("gb", resCross.ExitToll!.Country);
     }
-    
+
     [Fact]
     public async Task Gb_To_Fr()
     {
@@ -54,15 +53,15 @@ public class PassControllerTest
         client.Login("customs");
         var now = DateTime.Now;
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = now,
             ExitTollTime = now,
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("gb"))
+
+        var cross2 = new CrossingInfo(new TollOffice("gb"))
         {
             ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
@@ -80,7 +79,7 @@ public class PassControllerTest
         Assert.Equal("gb", resCross.EntryToll.Country);
         Assert.Equal("fr", resCross.ExitToll!.Country);
     }
-    
+
     [Fact]
     public async Task No_argument()
     {
@@ -89,15 +88,15 @@ public class PassControllerTest
         client.Login("customs");
         var now = DateTime.Now;
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = now,
             ExitTollTime = now,
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("gb"))
+
+        var cross2 = new CrossingInfo(new TollOffice("gb"))
         {
             ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
@@ -120,7 +119,7 @@ public class PassControllerTest
         client.Login("customs");
         var now = DateTime.Now;
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = now,
             ExitTollTime = now,
@@ -128,7 +127,7 @@ public class PassControllerTest
             Transport = Transport.Car
         };
 
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("gb"))
+        var cross2 = new CrossingInfo(new TollOffice("gb"))
         {
             ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
@@ -142,8 +141,8 @@ public class PassControllerTest
         var res = await client.GetAsync("/api/Pass?from=fr");
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
     }
-    
-    
+
+
     [Fact]
     public async Task Missing_from()
     {
@@ -152,7 +151,7 @@ public class PassControllerTest
         client.Login("customs");
         var now = DateTime.Now;
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = now,
             ExitTollTime = now,
@@ -160,7 +159,7 @@ public class PassControllerTest
             Transport = Transport.Car
         };
 
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("gb"))
+        var cross2 = new CrossingInfo(new TollOffice("gb"))
         {
             ExitToll = new TollOffice("fr"),
             EntryTollTime = now,
@@ -174,7 +173,7 @@ public class PassControllerTest
         var res = await client.GetAsync("/api/Pass?to=fr");
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
     }
-    
+
     [Fact]
     public async Task With_start()
     {
@@ -182,21 +181,21 @@ public class PassControllerTest
         var client = app.CreateClient();
         client.Login("customs");
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 10, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("fr"))
+        var cross2 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 10, 12, 2, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 37, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross3 = new CrossingInfo(new TollOffice("fr"))
+        var cross3 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 10, 11, 23, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 11, 58, 0, 0),
@@ -215,7 +214,7 @@ public class PassControllerTest
         Assert.Contains(cross1.EntryTollTime, entryTollTimes);
         Assert.Contains(cross2.EntryTollTime, entryTollTimes);
     }
-    
+
     [Fact]
     public async Task With_datetime_interval()
     {
@@ -223,35 +222,35 @@ public class PassControllerTest
         var client = app.CreateClient();
         client.Login("customs");
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("fr"))
+        var cross2 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross3 = new CrossingInfo(new TollOffice("fr"))
+        var cross3 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross4 = new CrossingInfo(new TollOffice("fr"))
+        var cross4 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        
+
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(cross1));
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(cross2));
         await client.PostAsync("/api/CrossingInfo", JsonContent.Create(cross3));
@@ -265,7 +264,7 @@ public class PassControllerTest
         Assert.Contains(cross2.EntryTollTime, entryTollTimes);
         // Assert.Contains(cross3.EntryTollTime, entryTollTimes);
     }
-    
+
     [Fact]
     public async Task End_without_start()
     {
@@ -273,28 +272,28 @@ public class PassControllerTest
         var client = app.CreateClient();
         client.Login("customs");
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("fr"))
+        var cross2 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross3 = new CrossingInfo(new TollOffice("fr"))
+        var cross3 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross4 = new CrossingInfo(new TollOffice("fr"))
+        var cross4 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
@@ -310,7 +309,7 @@ public class PassControllerTest
         var res = await client.GetAsync("/api/Pass?from=fr&to=gb&end=2022-01-09T11:00:00");
         Assert.Equal(HttpStatusCode.UnprocessableEntity, res.StatusCode);
     }
-    
+
     [Fact]
     public async Task End_before_start()
     {
@@ -318,28 +317,28 @@ public class PassControllerTest
         var client = app.CreateClient();
         client.Login("customs");
 
-        CrossingInfo cross1 = new CrossingInfo(new TollOffice("fr"))
+        var cross1 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 12, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 10, 12, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross2 = new CrossingInfo(new TollOffice("fr"))
+        var cross2 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 0, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 35, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross3 = new CrossingInfo(new TollOffice("fr"))
+        var cross3 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 8, 11, 58, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 8, 11, 23, 0, 0),
             ExitToll = new TollOffice("gb"),
             Transport = Transport.Car
         };
-        CrossingInfo cross4 = new CrossingInfo(new TollOffice("fr"))
+        var cross4 = new CrossingInfo(new TollOffice("fr"))
         {
             EntryTollTime = new DateTime(2022, 1, 9, 11, 5, 0, 0),
             ExitTollTime = new DateTime(2022, 1, 9, 11, 40, 0, 0),
@@ -355,6 +354,4 @@ public class PassControllerTest
         var res = await client.GetAsync("/api/Pass?from=fr&to=gb&start=2022-01-09T12:00:00&end=2022-01-08T11:00:00");
         Assert.Equal(HttpStatusCode.UnprocessableEntity, res.StatusCode);
     }
-    
-    
 }

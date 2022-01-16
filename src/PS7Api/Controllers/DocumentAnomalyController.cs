@@ -18,7 +18,7 @@ public class DocumentAnomalyController : ControllerBase
     }
 
     /// <summary>
-    /// Get all document anomalies
+    ///     Get all document anomalies
     /// </summary>
     /// <response code="200">Returns the list of document anomalies</response>
     /// <response code="401">Unauthorized - route required authentication as Administrator</response>
@@ -32,7 +32,7 @@ public class DocumentAnomalyController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an anomaly by id
+    ///     Gets an anomaly by id
     /// </summary>
     /// <param name="id"></param>
     /// <response code="200">Returns the anomaly</response>
@@ -54,7 +54,7 @@ public class DocumentAnomalyController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes an anomaly by id
+    ///     Deletes an anomaly by id
     /// </summary>
     /// <param name="id"></param>
     /// <response code="204">Anomaly deleted</response>

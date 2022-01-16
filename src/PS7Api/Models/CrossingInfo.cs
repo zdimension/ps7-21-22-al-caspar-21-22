@@ -4,6 +4,15 @@ namespace PS7Api.Models;
 
 public class CrossingInfo
 {
+    public CrossingInfo(TollOffice entryToll)
+    {
+        EntryToll = entryToll;
+    }
+
+    public CrossingInfo()
+    {
+    }
+
     public int Id { get; set; }
     public int NbPassengers { get; set; }
     public int TypeId { get; set; }
@@ -14,19 +23,12 @@ public class CrossingInfo
     public TollOffice EntryToll { get; set; }
     public int? ExitTollId { get; set; }
     public TollOffice? ExitToll { get; set; }
+
     [NotMapped]
     public bool Valid => ExitTollId != null;
-    
+
     public ICollection<Document> Documents { get; set; } = new List<Document>();
-
-    public CrossingInfo(TollOffice entryToll)
-    {
-        EntryToll = entryToll;
-    }
-
-    public CrossingInfo()
-    {
-    }
+    public Transport Transport { get; set; }
 
     public bool AreAllDocumentsValid()
     {
@@ -38,7 +40,6 @@ public class CrossingInfo
         ExitTollId = tollId;
         ExitTollTime = time;
     }
-    public Transport Transport { get; set; }
 }
 
 public abstract class TypePassenger
@@ -66,5 +67,10 @@ public class Merchendise : TypePassenger
 
 public enum Transport
 {
-    Boat, Ship, Airplace, Car, Train, Truck
+    Boat,
+    Ship,
+    Airplace,
+    Car,
+    Train,
+    Truck
 }

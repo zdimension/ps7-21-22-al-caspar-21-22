@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -13,9 +12,8 @@ namespace PS7Api.UnitTests.Controllers;
 
 public class DocumentAnomalyControllerTests
 {
-    
-    const string Path = "../../../Image/declaration_douane.png";
-    
+    private const string Path = "../../../Image/declaration_douane.png";
+
     [Fact]
     public async Task Empty_DocumentAnomaly_GET_Returns_200()
     {
@@ -110,10 +108,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -139,10 +137,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -166,10 +164,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -193,10 +191,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -225,10 +223,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);
@@ -257,10 +255,10 @@ public class DocumentAnomalyControllerTests
         var resp = await client.PostAsync("/api/CrossingInfo", JsonContent.Create(crossInfo));
         var crossInfoResp = await resp.Content.ReadFromJsonAsync<CrossingInfo>();
         var crossInfoId = crossInfoResp?.Id;
-        
+
         var imgBytes = await File.ReadAllBytesAsync(Path);
         var content = new MultipartFormDataContent { { new ByteArrayContent(imgBytes), "file", "image.jpg" } };
-        await client.PostAsync("/api/CrossingInfo/"+crossInfoId+"/Document", content);
+        await client.PostAsync("/api/CrossingInfo/" + crossInfoId + "/Document", content);
 
         var anomaliesDesc = new[] { "foo" };
         var anomalies = new DocumentController.AnomaliesBody(anomaliesDesc);

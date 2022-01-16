@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
-using PS7Api.Utilities;
 
 namespace PS7Api.Controllers;
 
@@ -40,7 +39,7 @@ public class DocumentController : ControllerBase
     }*/
 
     /// <summary>
-    /// Gets a document
+    ///     Gets a document
     /// </summary>
     /// <param name="id"></param>
     /// <response code="200">Returns the document</response>
@@ -59,7 +58,7 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the image of the document
+    ///     Gets the image of the document
     /// </summary>
     /// <param name="id"></param>
     /// <response code="200">Returns the image of the document</response>
@@ -78,7 +77,7 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Delete document
+    ///     Delete document
     /// </summary>
     /// <param name="id"></param>
     /// <response code="204">Document deleted</response>
@@ -97,9 +96,9 @@ public class DocumentController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-    
+
     /// <summary>
-    /// Patch document
+    ///     Patch document
     /// </summary>
     /// <param name="id"></param>
     /// <param name="patchDoc"></param>
@@ -113,27 +112,22 @@ public class DocumentController : ControllerBase
     public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document>? patchDoc)
     {
         if (patchDoc == null)
-        {
             return UnprocessableEntity();
-        }
- 
+
         var documentFromDb = await _context.Documents.FindAsync(id);
- 
+
         if (documentFromDb == null)
-        {
             return NotFound();
-        }
- 
+
         patchDoc.ApplyTo(documentFromDb);
- 
+
         var isValid = TryValidateModel(documentFromDb);
- 
-        if (!isValid){
+
+        if (!isValid)
             return UnprocessableEntity(ModelState);
-        }
- 
+
         await _context.SaveChangesAsync();
- 
+
         return NoContent();
     }
 
@@ -152,6 +146,6 @@ public class DocumentController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(); //todo find a more relevant response
     }
-    
+
     public record AnomaliesBody(string[] Anomalies);
 }

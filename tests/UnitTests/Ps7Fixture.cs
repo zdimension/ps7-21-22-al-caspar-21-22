@@ -35,7 +35,7 @@ public static class TestUtilities
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
             response.Content.ReadFromJsonAsync<LoginResult>().Result!.Token);
     }
-    
+
     public static void Logout(this HttpClient client)
     {
         client.DefaultRequestHeaders.Authorization = null;
