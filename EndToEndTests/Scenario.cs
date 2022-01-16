@@ -59,7 +59,11 @@ public class Scenario
         var result = await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query), JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
         
-        //todo Lucien consulte les flux
+        //Lucien consulte les flux
+        res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query));
+        var listCrossingInfo = res.Content.ReadFromJsonAsync<List<CrossingInfo>>();
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+        Assert.Single(listCrossingInfo.Result!);
         
     }
 
