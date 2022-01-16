@@ -131,7 +131,14 @@ public class DocumentController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Document/5/Non-compliant
+    /// <summary>
+    /// Reports anomalies of a file
+    /// </summary>
+    /// <param name="id">The id of the file</param>
+    /// <param name="anomalies">The anomalies of the file</param>
+    /// <response code="404">No file found with the given id</response>
+    /// <response code="422">No anomalies in the body</response>
+    /// <response code="200">Anomalies added to the file</response>
     [HttpPost("{id}/Non-compliant")]
     public async Task<IActionResult> NonCompliant(int id, [FromBody] AnomaliesBody anomalies)
     {

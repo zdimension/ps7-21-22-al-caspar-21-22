@@ -18,7 +18,16 @@ public class PassController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "")]
+    /// <summary>
+    /// Gets the road traffic 
+    /// </summary>
+    /// <param name="from">Where the users come from</param>
+    /// <param name="to">Where the users want to go</param>
+    /// <param name="start">Gets the road traffic after given time. If it's not specified, it's set to Today</param>
+    /// <param name="end">Gets the road traffic before given time. If it's not specified, it's set to Today. Needs the 'start' parameter</param>
+    /// <response code="422">If the 'from' or 'to' parameters are empty, if 'end' is specified without 'start' or if 'end' is before 'start'</response>
+    /// <response code="200">A list of CrossingInfo</response>
+    [HttpGet(Name = "Pass")]
     public async Task<IActionResult> Pass(
         [FromQuery] string from,
         [FromQuery] string to,

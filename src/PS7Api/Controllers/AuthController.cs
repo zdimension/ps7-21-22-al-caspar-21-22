@@ -30,6 +30,12 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// To login as an user
+    /// </summary>
+    /// <param name="body">The login form</param>
+    /// <response code="200">The Bearer token with its expiration</response>
+    /// <response code="401">Unauthorized - one or more login fields are wrong</response>
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginBody body)
@@ -86,6 +92,12 @@ public class AuthController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Registers a new user
+    /// </summary>
+    /// <param name="body">The user's connection information</param>
+    /// <response code="500">User already exist with the same email, or the creation has failed</response>
+    /// <response code="200">User created</response>
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] LoginBody body)
@@ -113,6 +125,12 @@ public class AuthController : ControllerBase
         return Ok(new { Status = "Success", Message = "User created successfully!" });
     }
 
+    /// <summary>
+    /// Returns the the two factor secret of an user in image
+    /// </summary>
+    /// <param name="id">The email of the user</param>
+    /// <response code="404">The given email isn't associate with an user</response>
+    /// <response code="200">The image</response>
     [HttpGet("qr")]
     public async Task<IActionResult> GetQrCode(string id)
     {
