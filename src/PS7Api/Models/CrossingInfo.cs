@@ -17,16 +17,17 @@ public class CrossingInfo
     public int NbPassengers { get; set; }
     public int TypeId { get; set; }
     public TypePassenger? Type { get; set; }
-    public DateTime EntryTollTime { get; set; }
+    public DateTime? EntryTollTime { get; set; }
     public DateTime? ExitTollTime { get; set; }
-    public int EntryTollId { get; set; }
-    public TollOffice EntryToll { get; set; }
+    public int? EntryTollId { get; set; }
+    public TollOffice? EntryToll { get; set; }
     public int? ExitTollId { get; set; }
     public TollOffice? ExitToll { get; set; }
 
     [NotMapped]
     public bool Valid => ExitTollId != null;
-
+    [NotMapped]
+    public bool Registered => EntryTollId != null;
     public ICollection<Document> Documents { get; set; } = new List<Document>();
     public Transport Transport { get; set; }
 
