@@ -141,7 +141,123 @@ public class Scenario
     [Fact]
     public async Task S3()
     {
-        //todo plein de gens passent
-        //todo Waze filtre les flux
+        await using var app = new Ps7Fixture();
+
+        var client = app.CreateClient();
+        client.Login("customs");
+        
+        // ----------------------------------------
+        var content = new CrossingInfo(new TollOffice("fr"))
+        {
+            NbPassengers = 6,
+            TypeId = 0,
+            EntryTollTime = new DateTime(2022, 3, 14, 20, 0, 0),
+            ExitTollTime = new DateTime(2022, 3, 15, 8, 0, 0),
+            EntryTollId = 3,
+            ExitTollId = 4,
+            Transport = Transport.Car
+        };
+        await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+        var contentDoc = new MultipartFormDataContent
+            { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/1/Document", contentDoc);
+        var validate = new Dictionary<string, string?>
+        {
+            ["id"] = "1",
+            ["tollId"] = "4"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate),
+            JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+
+
+        // ----------------------------------------
+        content = new CrossingInfo(new TollOffice("fr"))
+        {
+            NbPassengers = 4,
+            TypeId = 0,
+            EntryTollTime = DateTime.Now,
+            ExitTollTime = DateTime.Now.AddDays(1),
+            EntryTollId = 2,
+            ExitTollId = 1,
+            Transport = Transport.Car
+        };
+        await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+
+        contentDoc = new MultipartFormDataContent
+            { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/2/Document", contentDoc);
+        validate = new Dictionary<string, string?>
+        {
+            ["id"] = "2",
+            ["tollId"] = "1"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate),
+            JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        
+
+        // ----------------------------------------
+        content = new CrossingInfo(new TollOffice("fr"))
+        {
+            NbPassengers = 2,
+            TypeId = 0,
+            EntryTollTime = DateTime.Now,
+            ExitTollTime = DateTime.Now.AddDays(1),
+            EntryTollId = 2,
+            ExitTollId = 1,
+            Transport = Transport.Car
+        };
+        await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+
+        contentDoc = new MultipartFormDataContent
+            { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/3/Document", contentDoc);
+        validate = new Dictionary<string, string?>
+        {
+            ["id"] = "2",
+            ["tollId"] = "1"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate),
+            JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        
+        // ----------------------------------------
+        content = new CrossingInfo(new TollOffice("fr"))
+        {
+            NbPassengers = 1,
+            TypeId = 1,
+            EntryTollTime = DateTime.Now,
+            ExitTollTime = DateTime.Now.AddDays(1),
+            EntryTollId = 2,
+            ExitTollId = 1,
+            Transport = Transport.Truck
+        };
+        await client.PostAsync("/api/CrossingInfo", JsonContent.Create(content));
+
+        contentDoc = new MultipartFormDataContent
+            { { new ByteArrayContent(Array.Empty<byte>()), "file", "image.jpg" } };
+        await client.PostAsync("/api/CrossingInfo/3/Document", contentDoc);
+        validate = new Dictionary<string, string?>
+        {
+            ["id"] = "2",
+            ["tollId"] = "1"
+        };
+        await client.PatchAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", validate),
+            JsonContent.Create(DateTime.Now.AddDays(1).Iso8601()));
+        var query = new Dictionary<string, string?>
+        {
+            ["validatedCrossing"] = "false",
+            ["passengerCountMin"] = "0",
+            ["passengerCountMax"] = "4",
+            ["startDate"] = DateTime.Now.Iso8601(),
+            ["endDate"] = DateTime.Now.AddDays(1).Iso8601(),
+            ["passengerType"] = "1",
+            ["tollId"] = "1"
+        };
+
+        var res = await client.GetAsync(QueryHelpers.AddQueryString("/api/CrossingInfo/", query));
+
+        var listCrossingInfo = res.Content.ReadFromJsonAsync<List<CrossingInfo>>();
+
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+        Assert.Single(listCrossingInfo.Result!);
     }
 }
