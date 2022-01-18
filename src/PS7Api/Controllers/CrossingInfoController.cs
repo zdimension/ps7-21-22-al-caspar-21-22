@@ -95,11 +95,12 @@ public class CrossingInfoController : ControllerBase
 		return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
 	}
 	
-	[HttpPatch("{id}/Document", Name = "EntryTollWithAsync")]
+	[HttpPatch("{id}/EntryToll", Name = "EntryTollWithAsync")]
 	public async Task<IActionResult> AddEntryToll([FromQuery] int id,
 		[FromQuery] int tollId, [FromBody] DateTime? time = null)
 	{
-		var info = await _context.CrossingInfos.Include(c => c.Documents).ThenInclude(d => d.Anomalies)
+		var info = await _context.CrossingInfos
+			.Include(c => c.Documents).ThenInclude(d => d.Anomalies)
 			.FirstOrDefaultAsync(info => info.Id == id);
 		if (info == null)
 			return NotFound();
@@ -107,7 +108,7 @@ public class CrossingInfoController : ControllerBase
 		if (info.Registered)
 			return Conflict();
 
-		info.EntryTollId = tollId;
+		info.EntryToll = _context.TollOffices.FindAsync(tollId).Result;
 		info.EntryTollTime = time ?? DateTime.Now;
 
 		var service = IOfficialValidationService.GetValidationService(new RegionInfo(info.EntryToll!.Country));
@@ -228,8 +229,6 @@ public class CrossingInfoController : ControllerBase
 
 		if (info == null)
 			return NotFound();
-
-		//todo check if entrytoll not null
 
 		if (!info.Registered)
 			return UnprocessableEntity();

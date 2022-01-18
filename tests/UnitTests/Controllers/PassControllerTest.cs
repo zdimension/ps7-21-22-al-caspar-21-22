@@ -41,7 +41,7 @@ public class PassControllerTest
         var passResult = await res.Content.ReadFromJsonAsync<CrossingInfo[]>();
         Assert.Single(passResult!);
         var resCross = passResult![0];
-        Assert.Equal("fr", resCross.EntryToll.Country);
+        Assert.Equal("fr", resCross.EntryToll!.Country);
         Assert.Equal("gb", resCross.ExitToll!.Country);
     }
 
@@ -76,7 +76,7 @@ public class PassControllerTest
         var passResult = await res.Content.ReadFromJsonAsync<CrossingInfo[]>();
         Assert.Single(passResult!);
         var resCross = passResult![0];
-        Assert.Equal("gb", resCross.EntryToll.Country);
+        Assert.Equal("gb", resCross.EntryToll!.Country);
         Assert.Equal("fr", resCross.ExitToll!.Country);
     }
 
