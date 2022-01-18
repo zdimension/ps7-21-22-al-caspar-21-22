@@ -17,7 +17,7 @@
 |       Sprint        | #1  | #2  | #3  |
 |        :---:        | :-: | :-: | :-: |
 | Nb points planifiés |  18 |  42 |     |
-| Nb points délivrés  |  32 |     |     |
+| Nb points délivrés  |  32 |  42 |     |
 
 # Team
 **ARCIL Alexandre**
