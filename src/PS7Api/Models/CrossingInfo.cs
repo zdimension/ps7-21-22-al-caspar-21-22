@@ -29,6 +29,8 @@ public class CrossingInfo
 
     public ICollection<Document> Documents { get; set; } = new List<Document>();
     public Transport Transport { get; set; }
+    
+    public Person? Person { get; set; }
 
     public bool AreAllDocumentsValid()
     {

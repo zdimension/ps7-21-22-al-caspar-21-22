@@ -16,6 +16,8 @@ public class Ps7Context : IdentityDbContext<User>
     public DbSet<CrossingInfo> CrossingInfos { get; set; } = null!;
     public DbSet<TollOffice> TollOffices { get; set; } = null!;
 
+    public DbSet<Person> Persons { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<Human>();
