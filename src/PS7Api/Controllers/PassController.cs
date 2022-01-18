@@ -39,7 +39,7 @@ public class PassController : ControllerBase
         if (from.Length != 2 || to.Length != 2 || end != null && start == null || end < start)
             return UnprocessableEntity();
         var result = await _context.CrossingInfos.AsQueryable()
-            .Where(info => info.Registered)
+            .Where(info => info.EntryToll != null)
             .Where(info => info.Transport == Transport.Car || info.Transport == Transport.Truck)
             .Where(info => info.EntryToll!.Country == from)
             .Where(info => info.ExitToll != null && info.ExitToll.Country == to)
