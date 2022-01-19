@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PS7Api.Models;
+using PS7Api.Services;
 using PS7Api.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<Ps7Context>(opt => opt.UseInMemoryDatabase("Ps7"))
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<Ps7Context>()
     .AddDefaultTokenProviders();
+builder.Services.Add(new ServiceDescriptor(typeof(IFaceMatchService), new MockFaceMatchService()));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

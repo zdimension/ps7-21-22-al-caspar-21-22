@@ -14,11 +14,13 @@ public class CrossingInfoController : ControllerBase
 {
 	private readonly Ps7Context _context;
 	private readonly ILogger<CrossingInfoController> _logger;
+	private readonly IFaceMatchService _faceMatch;
 
-	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context)
+	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context, IFaceMatchService faceMatch)
 	{
 		_logger = logger;
 		_context = context;
+		_faceMatch = faceMatch;
 	}
 
 	/// <summary>
@@ -108,7 +110,7 @@ public class CrossingInfoController : ControllerBase
 		if (info.Registered)
 			return Conflict();
 
-		info.EntryToll = _context.TollOffices.FindAsync(tollId).Result;
+		info.EntryToll = await _context.TollOffices.FindAsync(tollId);
 		info.EntryTollTime = time ?? DateTime.Now;
 
 		var service = IOfficialValidationService.GetValidationService(new RegionInfo(info.EntryToll!.Country));
@@ -260,7 +262,10 @@ public class CrossingInfoController : ControllerBase
         var memoryStream = new MemoryStream();
         await photoFile.CopyToAsync(memoryStream);
         var photo = memoryStream.ToArray();
-        var person = await _context.Persons.Where(person => person.Image != null && person.Image.Equals(photo)).FirstOrDefaultAsync();
+        var person = (await _context.Persons.ToListAsync())
+	        .Select(p => new { p, Score = _faceMatch.GetMatchScore(p.Image!, photo)})
+	        .OrderByDescending(t => t.Score)
+	        .FirstOrDefault()?.p;
         if (person != null)
             return Ok(person.Id);
         return NotFound();
