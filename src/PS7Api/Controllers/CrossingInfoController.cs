@@ -264,6 +264,7 @@ public class CrossingInfoController : ControllerBase
         var photo = memoryStream.ToArray();
         var person = (await _context.Persons.ToListAsync())
 	        .Select(p => new { p, Score = _faceMatch.GetMatchScore(p.Image!, photo)})
+	        .Where(t => t.Score > 0.8)
 	        .OrderByDescending(t => t.Score)
 	        .FirstOrDefault()?.p;
         if (person != null)
