@@ -15,6 +15,12 @@ public class CrossingInfo
         EntryToll = entryToll;
         Person = person;
     }
+    
+    public CrossingInfo(TollOffice entryToll, int person)
+    {
+        EntryToll = entryToll;
+        PersonId = person;
+    }
 
     public CrossingInfo()
     {
@@ -38,7 +44,7 @@ public class CrossingInfo
     public ICollection<Document> Documents { get; set; } = new List<Document>();
     public Transport Transport { get; set; }
     
-    public Person Person { get; set; }
+    public Person? Person { get; set; }
     public int? PersonId { get; set; }
 
     public bool AreAllDocumentsValid()
