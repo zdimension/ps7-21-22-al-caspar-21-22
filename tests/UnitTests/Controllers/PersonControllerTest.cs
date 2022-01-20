@@ -12,8 +12,8 @@ public class PersonControllerTest
 {
     
     private const string PersonOneImagePath = "../../../Image/person_1.jpg";
-    private const string PersonTwoImagePath = "../../../Image/person_2.jpeg";
-    private const string PersonThreeImagePath = "../../../Image/person_3.jpeg";
+    private const string PersonTwoImagePath = "../../../Image/person_2.jpg";
+    private const string PersonThreeImagePath = "../../../Image/person_3.jpg";
 
     [Fact]
     public async void Create_Person()
