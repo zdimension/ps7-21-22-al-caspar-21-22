@@ -12,8 +12,8 @@ public class PersonControllerTest
 {
     
     private const string PersonOneImagePath = "../../../Image/person_1.jpg";
-    private const string PersonTwoImagePath = "../../../Image/person_2.jpg";
-    private const string PersonThreeImagePath = "../../../Image/person_3.jpg";
+    private const string PersonTwoImagePath = "../../../Image/person_2.jpeg";
+    private const string PersonThreeImagePath = "../../../Image/person_3.jpeg";
 
     [Fact]
     public async void Create_Person()
@@ -22,7 +22,7 @@ public class PersonControllerTest
         var client = app.CreateClient();
 
         var imgBytes = await File.ReadAllBytesAsync(PersonOneImagePath);
-        var data = new MultipartFormDataContent{ { new ByteArrayContent(imgBytes), "file", "person.jpg" } };
+        var data = new MultipartFormDataContent{ { new ByteArrayContent(imgBytes), "photoFile", "person.jpg" } };
         var rep = await client.PostAsync("/api/Person", data);
         Assert.Equal(HttpStatusCode.Created, rep.StatusCode);
     }
