@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PS7Api.Models;
 
@@ -7,6 +8,12 @@ public class CrossingInfo
     public CrossingInfo(TollOffice entryToll)
     {
         EntryToll = entryToll;
+    }
+    
+    public CrossingInfo(TollOffice entryToll, Person person)
+    {
+        EntryToll = entryToll;
+        Person = person;
     }
 
     public CrossingInfo()
@@ -31,7 +38,8 @@ public class CrossingInfo
     public ICollection<Document> Documents { get; set; } = new List<Document>();
     public Transport Transport { get; set; }
     
-    public Person? Person { get; set; }
+    public Person Person { get; set; }
+    public int? PersonId { get; set; }
 
     public bool AreAllDocumentsValid()
     {

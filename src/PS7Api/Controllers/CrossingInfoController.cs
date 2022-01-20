@@ -14,13 +14,11 @@ public class CrossingInfoController : ControllerBase
 {
 	private readonly Ps7Context _context;
 	private readonly ILogger<CrossingInfoController> _logger;
-	private readonly IFaceMatchService _faceMatch;
 
-	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context, IFaceMatchService faceMatch)
+	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context)
 	{
 		_logger = logger;
 		_context = context;
-		_faceMatch = faceMatch;
 	}
 
 	/// <summary>
@@ -89,6 +87,7 @@ public class CrossingInfoController : ControllerBase
 	public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
 	{
 		_context.CrossingInfos.Add(info);
+		info.Person.CrossingInfos.Add(info);
 
 		await _context.SaveChangesAsync();
 
