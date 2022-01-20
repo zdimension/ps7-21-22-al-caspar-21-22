@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PS7Api.Models;
 using PS7Api.Services;
@@ -21,7 +22,13 @@ public class PersonController : ControllerBase
         _faceMatch = faceMatch;
     }
 
+    /// <summary>
+    /// Create a Person from a photo
+    /// </summary>
+    /// <param name="photoFile">A photo</param>
+    /// <response code="201">The created Person</response>
     [HttpPost(Name = "Create")]
+    [ProducesResponseType(typeof(CreatedAtActionResult), 201)]
     public async Task<IActionResult> Create(IFormFile photoFile)
     {
         var memoryStream = new MemoryStream();
@@ -54,6 +61,7 @@ public class PersonController : ControllerBase
         var photo = memoryStream.ToArray();
         var person = (await _context.Persons.ToListAsync())
             .Select(p => new { p, Score = _faceMatch.GetMatchScore(p.Image!, photo)})
+            .Where(t => t.Score > 0.8)
             .OrderByDescending(t => t.Score)
             .FirstOrDefault()?.p;
         if (person != null)
@@ -72,10 +80,43 @@ public class PersonController : ControllerBase
     [ProducesResponseType(typeof(List<CrossingInfo>), 200)]
     public async Task<IActionResult> GetCrossingInfos(int id)
     {
-        var person = await _context.Persons.FindAsync(id);
+        var person = await _context.Persons.Include(person1 => person1.CrossingInfos).FirstOrDefaultAsync();
         if(person == null)
             return NotFound();
         return Ok(person.CrossingInfos);
     }
+    
+    /// <summary>
+    ///     Patch person
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="patchDoc"></param>
+    /// <response code="204">Patch applied</response>
+    /// <response code="422">Invalid parameters given</response>
+    /// <response code="404">Person not found</response>
+    [HttpPatch("{id}")]
+    [ProducesResponseType(typeof(NoContentResult), 204)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Person> patchDoc)
+    {
+        var personFromDb = await _context.Persons.FindAsync(id);
+
+        if (personFromDb == null)
+            return NotFound();
+
+        patchDoc.ApplyTo(personFromDb);
+
+        var isValid = TryValidateModel(personFromDb);
+
+        if (!isValid)
+            return UnprocessableEntity(ModelState);
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+    
+    
+    
     
 }

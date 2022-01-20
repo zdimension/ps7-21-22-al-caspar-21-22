@@ -87,7 +87,7 @@ public class CrossingInfoController : ControllerBase
 	public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
 	{
 		_context.CrossingInfos.Add(info);
-		info.Person.CrossingInfos.Add(info);
+		// info.Person.CrossingInfos.Add(info);
 
 		await _context.SaveChangesAsync();
 

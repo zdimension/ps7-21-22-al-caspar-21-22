@@ -102,18 +102,14 @@ public class DocumentController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <param name="patchDoc"></param>
-    /// <response code="204">Invalid parameters given</response>
+    /// <response code="204">Patch applied</response>
     /// <response code="422">Invalid parameters given</response>
     /// <response code="404">Document not found</response>
     [HttpPatch("{id}")]
     [ProducesResponseType(typeof(NoContentResult), 204)]
-    [ProducesResponseType(typeof(UnprocessableEntityResult), 422)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
-    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document>? patchDoc)
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<Document> patchDoc)
     {
-        if (patchDoc == null)
-            return UnprocessableEntity();
-
         var documentFromDb = await _context.Documents.FindAsync(id);
 
         if (documentFromDb == null)
