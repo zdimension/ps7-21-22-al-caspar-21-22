@@ -95,8 +95,20 @@ public class CrossingInfoController : ControllerBase
 
 		return CreatedAtAction("GetCrossingInfo", new { id = info.Id }, info);
 	}
-	
+	/// <summary>
+	/// Adds an EntryToll to a CrossingInfo
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="tollId"></param>
+	/// <param name="time"></param>
+	/// <response code="204">EntryToll added to CrossingInfo</response>
+	/// <response code="404">CrossingInfo not found</response>
+	/// <response code="409">CrossingInfo already has an EntryToll</response>
+	[AuthorizeRoles(UserRole.CustomsOfficer)]
 	[HttpPatch("{id}/EntryToll", Name = "EntryTollWithAsync")]
+	[ProducesResponseType(typeof(NoContentResult), 204)]
+	[ProducesResponseType(typeof(NotFoundResult), 404)]
+	[ProducesResponseType(typeof(ConflictResult), 409)]
 	public async Task<IActionResult> AddEntryToll([FromQuery] int id,
 		[FromQuery] int tollId, [FromBody] DateTime? time = null)
 	{
