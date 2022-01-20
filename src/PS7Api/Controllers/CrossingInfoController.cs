@@ -14,13 +14,11 @@ public class CrossingInfoController : ControllerBase
 {
 	private readonly Ps7Context _context;
 	private readonly ILogger<CrossingInfoController> _logger;
-	private readonly IFaceMatchService _faceMatch;
 
-	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context, IFaceMatchService faceMatch)
+	public CrossingInfoController(ILogger<CrossingInfoController> logger, Ps7Context context)
 	{
 		_logger = logger;
 		_context = context;
-		_faceMatch = faceMatch;
 	}
 
 	/// <summary>
@@ -89,6 +87,7 @@ public class CrossingInfoController : ControllerBase
 	public async Task<IActionResult> PostCrossingInfo(CrossingInfo info)
 	{
 		_context.CrossingInfos.Add(info);
+		info.Person.CrossingInfos.Add(info);
 
 		await _context.SaveChangesAsync();
 
@@ -248,27 +247,4 @@ public class CrossingInfoController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Gets the person id associated with the photo
-    /// </summary>
-    /// <param name="photoFile">An image of the person</param>
-    /// <response code="200">The id of the person</response>
-    /// <response code="404">If no association has been found</response>
-    [HttpPost("GetPhoto", Name = "GetPhoto")]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    public async Task<IActionResult> GetPhoto(IFormFile photoFile)
-    {
-        var memoryStream = new MemoryStream();
-        await photoFile.CopyToAsync(memoryStream);
-        var photo = memoryStream.ToArray();
-        var person = (await _context.Persons.ToListAsync())
-	        .Select(p => new { p, Score = _faceMatch.GetMatchScore(p.Image!, photo)})
-	        .OrderByDescending(t => t.Score)
-	        .FirstOrDefault()?.p;
-        if (person != null)
-            return Ok(person.Id);
-        return NotFound();
-    }
-    
 }

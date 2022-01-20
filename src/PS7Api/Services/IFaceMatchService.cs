@@ -9,6 +9,6 @@ public class MockFaceMatchService : IFaceMatchService
 {
     public float GetMatchScore(byte[] user, byte[] given)
     {
-        return 1;
+        return user.Length < given.Length ? user.Length / given.Length : given.Length / user.Length;
     }
 }
